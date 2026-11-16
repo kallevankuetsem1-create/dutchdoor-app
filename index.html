@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DutchDoor</title>
+<meta name="description" content="Find a safe room and get settled as an international student in the Netherlands.">
+<meta name="theme-color" content="#1F3A5F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DutchDoor">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="appbar">
+  <button class="back" id="back" aria-label="Back" hidden>&#8249;</button>
+  <h1 id="title">DutchDoor</h1>
+</header>
+<main id="view" tabindex="-1"></main>
+<nav class="tabs" aria-label="Main">
+  <button data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+  <button data-tab="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Rooms</button>
+  <button data-tab="tracker"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Saved</button>
+  <button data-tab="todo"><svg viewBox="0 0 24 24"><path d="M4 6l2 2 4-4M4 14l2 2 4-4M13 6h7M13 14h7M13 20h7"/></svg>To-do</button>
+  <button data-tab="help"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Help</button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
