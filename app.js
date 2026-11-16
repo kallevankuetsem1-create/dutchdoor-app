@@ -53,6 +53,79 @@ var CHECKLISTS = {
     'I know the full name of the landlord or agency','The agency is listed at the KvK (Chamber of Commerce)','I have a written contract','Registering at this address is allowed']}
 };
 
+// "How to arrange this" guides, one per checklist item (key = list-index). General info: always check the official link.
+var GUIDES = {
+  'before-0': {why:'You need a valid passport or ID card for your visa, the city hall, the bank and your rental contract.',
+    steps:['Check the expiry date: it must be valid for your whole stay.','Expires soon? Renew it in your home country before you leave. This can take weeks.','Make a photo or scan and keep it in a safe place (not in your email inbox).'],
+    bring:[], cost:'Depends on your country', time:'Renewing can take 2–8 weeks', links:[], tip:'EU students can use an ID card. Non-EU students need a passport.'},
+  'before-1': {why:'The city hall sometimes asks for your birth certificate when you register, to put your details in the Dutch population register (BRP).',
+    steps:['Ask for a recent copy of your birth certificate in your home country.','Check if it needs an official stamp (apostille or legalisation). This depends on your country.','From an EU country? Ask for a multilingual standard form, then no stamp or translation is needed.','Not in English, Dutch, German or French? You may need a sworn translation.'],
+    bring:[], cost:'€10–100, depends on your country', time:'1–6 weeks', links:[['Legalising documents (government.nl)','https://www.government.nl/topics/legalisation-of-documents']], tip:'Arrange this early. It is very hard to do from the Netherlands.'},
+  'before-2': {why:'Your letter of acceptance proves you are a student. You need it for your visa, student housing and sometimes the bank.',
+    steps:['Download it from your school portal or email.','Save it as PDF on your phone and print one copy.','Also save proof of enrolment (inschrijving) once you have it.'],
+    bring:[], cost:'Free', time:'—', links:[['Studielink (enrolment)','https://www.studielink.nl']], tip:'Housing providers like SSH or DUWO often ask for proof of enrolment.'},
+  'before-3': {why:'Students from outside the EU/EEA/Switzerland usually need a residence permit to study in the Netherlands.',
+    steps:['From the EU/EEA or Switzerland? You do not need a visa. Skip this step.','Non-EU: your school applies for you at the IND. Ask the international office how it works.','Send your documents and pay the fee via your school.','After approval: pick up your MVV (entry visa) at the Dutch embassy if needed.','After arrival: pick up your residence permit card at the IND.'],
+    bring:['Passport','Proof of enough money for your stay','Letter of acceptance'], cost:'IND fee (check ind.nl for the current amount)', time:'Start at least 3 months before you travel', links:[['IND – study in the Netherlands','https://ind.nl/en/residence-permits/study']], tip:'Do not book a non-refundable flight before your permit is approved.'},
+  'before-4': {why:'Without an address you cannot register at the city hall, and without registration you get no BSN.',
+    steps:['Use the Rooms tab to compare cities and open housing websites.','Ask your school\'s housing office: they often have rooms for internationals.','No room yet? Book short stay (hostel, short-stay housing, HousingAnywhere) for your first weeks.','Do the scam check before you pay anything.'],
+    bring:[], cost:'See the Rooms tab', time:'Start 3–6 months early', links:[], tip:'Ask in the Community tab: other students may look for housemates.', go:['search','Search rooms']},
+  'before-5': {why:'In the first month you pay a lot at once: deposit, first rent, furniture, insurance and a bike.',
+    steps:['Use the Budget tool to see your monthly costs.','Count on 1 month deposit + first rent + about €500 for start costs.','Bring a card that works abroad (Visa/Mastercard) until you have a Dutch account.','Check if you can get Dutch student finance (DUO) if you work in NL.'],
+    bring:[], cost:'Often €2,000–3,000 for the first month', time:'—', links:[['DUO – student finance for EU students','https://duo.nl/particulier/international-student/']], tip:'Never pay rent with cash or gift cards.', go:['budget','Open budget tool']},
+  'before-6': {why:'You must be insured from day one. Medical costs in the Netherlands can be very high.',
+    steps:['Check if your own insurance covers you in the Netherlands (EU students: bring your EHIC card).','No cover? Take a student insurance for internationals for your first months.','Will you work in NL? Then you will need Dutch health insurance (see To-do: health insurance).'],
+    bring:['EHIC card (EU students)'], cost:'Student insurance from about €30–50 / month', time:'Arrange before you travel', links:[['Health insurance (government.nl)','https://www.government.nl/topics/health-insurance']], tip:'Keep your insurance card or policy on your phone.'},
+  'before-7': {why:'Registering is required if you stay longer than 4 months. Appointments can be full for weeks, so book early.',
+    steps:['Go to the website of the municipality (gemeente) where you will live.','Search for "registration" or "inschrijven" and book an appointment online.','Pick a date in your first week in the Netherlands.','Save the confirmation email.'],
+    bring:['Passport / ID','Rental contract or landlord permission','Birth certificate (if asked)'], cost:'Free', time:'5 minutes online', links:[['Moving to the Netherlands (government.nl)','https://www.government.nl/topics/personal-data/registering-in-the-brp']], tip:'Some cities have a special international desk with English service.'},
+  'first-0': {why:'Everyone who stays longer than 4 months must register at the municipality. This gives you a BSN.',
+    steps:['Go to your appointment at the city hall (gemeente).','Show your documents and fill in the form.','You often get your BSN at the desk or by post within a few days.'],
+    bring:['Passport / ID','Rental contract or signed permission from your landlord','Birth certificate (if asked)','Residence permit (non-EU)'], cost:'Free', time:'Appointment: 15–30 min', links:[['Registering in the BRP','https://www.government.nl/topics/personal-data/registering-in-the-brp']], tip:'Your landlord does not allow registration? That is a red flag. Ask DutchDoor for help.'},
+  'first-1': {why:'Your BSN (citizen service number) is your personal number for the government, bank, work, doctor and insurance.',
+    steps:['You get your BSN when you register at the city hall.','Write it down and keep the letter in a safe place.','Only give your BSN to official organisations (employer, bank, insurer, government).'],
+    bring:[], cost:'Free', time:'Usually within a week after registering', links:[['What is a BSN?','https://www.government.nl/topics/personal-data/citizen-service-number-bsn']], tip:'Never send a photo of your BSN or passport to a landlord you have not met.'},
+  'first-2': {why:'Many shops, your rent and your salary need a Dutch or EU bank account. Many places do not accept credit cards.',
+    steps:['Choose a bank: ING, ABN AMRO, Rabobank (student accounts) or bunq (fully online).','Open the account online or make an appointment.','Show your passport and BSN. Some online banks let you start without a BSN.','Download the bank app and activate your debit card.'],
+    bring:['Passport / ID','BSN','Address in the Netherlands'], cost:'Student accounts: about €0–5 / month', time:'1–2 weeks until you have your card', links:[], tip:'Learn how iDEAL and Tikkie work: everyone uses them to pay and split costs.'},
+  'first-3': {why:'DigiD is your digital login for the government: taxes, healthcare allowance (zorgtoeslag), rent benefit and DUO.',
+    steps:['Go to digid.nl and click "Apply for DigiD".','Fill in your BSN, date of birth, postcode and house number.','You get an activation letter by post at your address within a few days.','Activate it and install the DigiD app.'],
+    bring:['BSN','Registered Dutch address'], cost:'Free', time:'About 5 working days (letter)', links:[['DigiD','https://www.digid.nl/en']], tip:'Your name must be on the mailbox, or the letter may not arrive.'},
+  'first-4': {why:'Do you work in the Netherlands, also a small side job? Then Dutch basic health insurance (basisverzekering) is required by law.',
+    steps:['Check if you need it: working in NL = yes. Only studying = often your own or student insurance is enough.','Compare insurers on a comparison website and choose a basic insurance.','Sign up within 4 months after you start working. You pay from the start date.','With low income? Apply for zorgtoeslag (healthcare allowance) via DigiD.'],
+    bring:['BSN','Bank account'], cost:'About €150 / month, partly paid back via zorgtoeslag', time:'Sign up online in 15 minutes', links:[['Health insurance (government.nl)','https://www.government.nl/topics/health-insurance'],['Zorgtoeslag (Belastingdienst)','https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/healthcare-allowance']], tip:'There is a fine if you work and have no Dutch insurance. Do not wait.'},
+  'first-5': {why:'In the Netherlands you always go to your general doctor (huisarts) first. Register before you are sick.',
+    steps:['Search "huisarts" + your postcode on Google Maps.','Call or check the website: do they accept new patients?','Fill in the registration form of the practice.','Many universities have a student doctor: ask your school.'],
+    bring:['Passport / ID','Insurance details','BSN'], cost:'Free (paid by insurance)', time:'Can take a few calls to find a place', links:[], tip:'Emergency? Call 112. Urgent at night or weekend? Call the huisartsenpost.'},
+  'first-6': {why:'With an OV-chipkaart you travel by train, bus and tram. You can also tap in with your bank card or phone.',
+    steps:['Easiest: tap in and out with your contactless bank card or phone (OVpay).','Want discounts? Order a personal OV-chipkaart online.','Add a discount subscription in the NS app if you travel a lot.','Always check in AND check out, or you pay a high fee.'],
+    bring:['Passport photo (for a personal card)'], cost:'Personal card: about €7.50', time:'Card arrives in about 1 week', links:[['OV-chipkaart','https://www.ov-chipkaart.nl/en'],['NS (trains)','https://www.ns.nl/en']], tip:'EU students who work enough hours may get a free student travel product via DUO.'},
+  'first-7': {why:'A bike is the cheapest and fastest way to get around in Dutch cities.',
+    steps:['Buy a second-hand bike: Marktplaats, Facebook groups or a local bike shop.','Or rent one: Swapfiets (monthly fee, repairs included).','Buy two good locks: a frame lock and a chain lock.','Learn the rules: lights on when it is dark, no phone while cycling.'],
+    bring:[], cost:'Second-hand €80–200, Swapfiets about €20 / month', time:'1 day', links:[['Swapfiets','https://swapfiets.nl/en']], tip:'A very cheap bike from a stranger is often stolen. Do not buy it.'},
+  'pay-0': {why:'Scammers often cannot show the room because it does not exist or is not theirs.',
+    steps:['Ask for a viewing in real life, or a live video call (not a recorded video).','In the video call: ask them to show the street, the front door and the view from the window.','Ask the people who live there questions.'],
+    bring:[], cost:'Free', time:'30 minutes', links:[], tip:'"I am abroad and can not show you the room" is the most common scam story.'},
+  'pay-1': {why:'Scammers copy photos from other ads or hotels.',
+    steps:['Save a photo from the ad.','Upload it to Google Lens or TinEye.','Do the same photos show up in another city or on another website? Then it is a scam.'],
+    bring:[], cost:'Free', time:'5 minutes', links:[['Google Lens','https://lens.google.com'],['TinEye','https://tineye.com']], tip:''},
+  'pay-2': {why:'Fake ads sometimes use an address that does not exist, or a shop or office building.',
+    steps:['Search the address on Google Maps.','Look at Street View: is it a house? Does it look like the photos?','Check the travel time to your school.'],
+    bring:[], cost:'Free', time:'5 minutes', links:[['Google Maps','https://maps.google.com']], tip:''},
+  'pay-3': {why:'You must know who you rent from. Scammers often only use a first name and WhatsApp.',
+    steps:['Ask for the full name of the landlord or the agency.','Search the name online together with words like "scam" or "fraud".','Ask who the owner of the house is. You can check this at the Kadaster (small fee).'],
+    bring:[], cost:'Kadaster check about €3', time:'15 minutes', links:[['Kadaster','https://www.kadaster.nl/']], tip:''},
+  'pay-4': {why:'A real rental agency is registered at the Chamber of Commerce (KvK).',
+    steps:['Go to kvk.nl and search the name of the agency.','Check the address and the KvK number on their website and contract.','Not registered? Do not pay.'],
+    bring:[], cost:'Free', time:'5 minutes', links:[['KvK search','https://www.kvk.nl/en/search/']], tip:'Agencies may not charge you "agency costs" if they also work for the landlord.'},
+  'pay-5': {why:'A written contract protects you. Without it, it is hard to prove anything.',
+    steps:['Ask for the contract before you pay anything.','Check: start date, length, rent, service costs, deposit and notice period.','Do not understand something? Ask DutchDoor or your school to check it.'],
+    bring:[], cost:'Free', time:'—', links:[['Check your rent (Huurcommissie)','https://www.huurcommissie.nl/huurcommissie-helpt/huurprijscheck-en-puntentelling']], tip:'Pay the deposit by bank transfer, never in cash.', go:['rights','Your rights']},
+  'pay-6': {why:'Without registration at the city hall you get no BSN. Then you cannot work, open a bank account or get insurance.',
+    steps:['Ask the landlord in writing: "Can I register at this address?"','Make sure it says so in your contract.','The answer is no? Look for another room.'],
+    bring:[], cost:'Free', time:'—', links:[], tip:''}
+};
+
 var SCAM_Q = [
   {q:'Is the rent much lower than normal for this city?', w:3},
   {q:'Is the landlord "abroad" or unable to show the room?', w:4},
@@ -218,12 +291,40 @@ views.room = function (id, cityId) {
   };
 };
 
+views.guide = function (key, i) {
+  var cl = CHECKLISTS[key], g = GUIDES[key + '-' + i]; if (!cl || !g) return views.todo();
+  i = +i; var st = store.get('cl_' + key, {}), done = !!st[i], next = i + 1 < cl.items.length ? i + 1 : null;
+  function sec(t, body) { return '<div class="card"><h3>' + t + '</h3>' + body + '</div>'; }
+  return {title:'How to', back:'todo', tab:'todo', html:
+    '<p class="muted" style="margin-bottom:4px">' + esc(cl.title) + ' · step ' + (i + 1) + ' of ' + cl.items.length + '</p><h2>' + esc(cl.items[i]) + '</h2>' +
+    '<div class="card"><p style="margin:0">' + esc(g.why) + '</p>' +
+      '<div class="row" style="margin-top:10px"><span class="tag">💶 ' + esc(g.cost) + '</span>' + (g.time && g.time !== '—' ? '<span class="tag">⏱️ ' + esc(g.time) + '</span>' : '') + '</div></div>' +
+    sec('How to do it', g.steps.map(function (s, n) { return '<div class="step" style="margin:8px 0"><b class="n">' + (n + 1) + '</b><p style="margin:3px 0 0">' + esc(s) + '</p></div>'; }).join('')) +
+    (g.bring.length ? sec('What to bring', '<ul class="list">' + g.bring.map(function (b) { return '<li>📄 ' + esc(b) + '</li>'; }).join('') + '</ul>') : '') +
+    (g.tip ? '<div class="card result mid"><b>💡 Tip</b><p style="margin:4px 0 0">' + esc(g.tip) + '</p></div>' : '') +
+    (g.links.length || g.go ? sec('Useful links', '<div class="row">' +
+      (g.go ? '<a class="btn sm" href="#' + g.go[0] + '">' + esc(g.go[1]) + '</a>' : '') +
+      g.links.map(function (l) { return '<a class="btn ghost sm" href="' + l[1] + '" target="_blank" rel="noopener">' + esc(l[0]) + ' ↗</a>'; }).join('') + '</div>' +
+      (g.links.length ? '<p class="muted" style="margin:8px 0 0">Rules and prices change. Always check the official website.</p>' : '')) : '') +
+    '<button class="btn block' + (done ? ' ghost' : '') + '" id="gdone">' + (done ? '✓ Done — mark as not done' : 'Mark as done') + '</button>' +
+    (next !== null ? '<button class="btn ghost block" style="margin-top:10px" onclick="location.hash=\'guide/' + key + '/' + next + '\'">Next: ' + esc(cl.items[next]) + ' ›</button>' : '') +
+    '<p class="muted" style="text-align:center;margin-top:14px">Stuck? <a href="#help">Ask DutchDoor</a> or <a href="#community">ask other students</a>.</p>',
+    bind: function () {
+      document.getElementById('gdone').onclick = function () {
+        st[i] = !done; store.set('cl_' + key, st); toast(done ? 'Marked as not done' : 'Nice, done! ✓');
+        if (!done && next !== null) go('guide/' + key + '/' + next); else render();
+      };
+    }
+  };
+};
+
 views.todo = function () {
-  return {title:'To-do', tab:'todo', html: Object.keys(CHECKLISTS).map(function (key) {
+  return {title:'To-do', tab:'todo', html: '<p class="muted">Tap a task to see how to arrange it step by step.</p>' + Object.keys(CHECKLISTS).map(function (key) {
     var st = store.get('cl_' + key, {}), cl = CHECKLISTS[key], pr = checklistProgress(key);
     return '<div class="card"><h3>' + cl.title + '</h3><span class="muted">' + pr[0] + ' of ' + pr[1] + ' done</span>' + bar(pr[0], pr[1]) +
       cl.items.map(function (it, i) {
-        return '<label class="check' + (st[i] ? ' done' : '') + '"><input type="checkbox" data-cl="' + key + '" data-i="' + i + '"' + (st[i] ? ' checked' : '') + '><span>' + esc(it) + '</span></label>';
+        return '<div class="check' + (st[i] ? ' done' : '') + '"><input type="checkbox" aria-label="Done" data-cl="' + key + '" data-i="' + i + '"' + (st[i] ? ' checked' : '') + '>' +
+          '<a class="howto" href="#guide/' + key + '/' + i + '"><span>' + esc(it) + '</span><small>How to arrange this ›</small></a></div>';
       }).join('') +
       (key === 'pay' ? '<p class="muted" style="margin-top:8px">' + (pr[0] === pr[1] ? '✅ Looks good. Still not sure? Contact DutchDoor.' : '⚠️ Do not pay until everything is checked.') + '</p>' : '') + '</div>';
   }).join(''),

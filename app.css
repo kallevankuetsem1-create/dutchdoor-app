@@ -64,6 +64,9 @@ input[type=range]{padding:0}
 .check:last-child{border:0}
 .check input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--blue)}
 .check.done span{text-decoration:line-through;color:var(--muted)}
+.howto{flex:1;text-decoration:none;color:var(--text);display:flex;flex-direction:column}
+.howto small{color:var(--blue);font-weight:600;font-size:.8rem}
+.check.done .howto span{text-decoration:line-through;color:var(--muted)}
 .bar{height:8px;background:var(--light);border-radius:99px;overflow:hidden;margin:6px 0}
 .bar i{display:block;height:100%;background:var(--blue);border-radius:99px;transition:width .3s}
 .result{border-left:5px solid var(--blue)}
