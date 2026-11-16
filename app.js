@@ -174,16 +174,17 @@ views.home = function () {
   var a = checklistProgress('before'), b = checklistProgress('first');
   var c = city(prefs.city);
   return {title:'DutchDoor', html:
-    '<div class="card hero"><h2>Hi ' + esc((me() || {name:''}).name.split(' ')[0]) + '! 👋</h2><p>Find a safe room and get settled in the Netherlands, step by step.</p>' +
+    '<div class="card hero"><h2>' + (me() ? 'Hi ' + esc(me().name.split(' ')[0]) + '! 👋' : 'Welcome! 👋') + '</h2><p>Find a safe room and get settled in the Netherlands, step by step.</p>' +
     '<button class="btn" style="background:#fff;color:#1F3A5F" onclick="location.hash=\'search\'">Find a room</button></div>' +
     (c ? '<div class="card city" onclick="location.hash=\'city/' + c.id + '\'"><div><h3>Your city: ' + esc(c.name) + '</h3><span class="muted">Room about ' + eur(c.room) + ' / month</span></div><span class="price">›</span></div>' : '') +
     '<div class="grid2">' +
       '<button class="tile" onclick="location.hash=\'scam\'"><span class="ic">🛡️</span><b>Scam check</b><span>Is this ad real?</span></button>' +
       '<button class="tile" onclick="location.hash=\'budget\'"><span class="ic">💶</span><b>Budget</b><span>What can I pay?</span></button>' +
-      '<button class="tile" onclick="location.hash=\'community\'"><span class="ic">👋</span><b>Students</b><span>' + others().filter(function (x) { return x.city === (me() || {}).city; }).length + ' in your city</span></button>' +
+      '<button class="tile" onclick="location.hash=\'community\'"><span class="ic">👋</span><b>Students</b><span>' + (viewer().city ? others().filter(function (x) { return x.city === viewer().city; }).length + ' in your city' : others().length + ' students') + '</span></button>' +
       '<button class="tile" onclick="location.hash=\'help\'"><span class="ic">🆘</span><b>Help</b><span>Rights, FAQ, 112</span></button>' +
     '</div>' +
     (rooms.length ? '<div class="card city" onclick="location.hash=\'tracker\'"><div><h3>📌 Saved rooms</h3><span class="muted">' + rooms.length + ' saved</span></div><span class="price">›</span></div>' : '') +
+    (me() ? '' : '<div class="card"><h3>Meet other students</h3><p class="muted">Create a free student account to show your student card and chat with students in your city.</p><div class="row"><button class="btn sm" onclick="location.hash=\'signup\'">Create account</button><button class="btn ghost sm" onclick="location.hash=\'login\'">Log in</button></div></div>') +
     '<div class="card"><h3>Your progress</h3>' +
       '<p class="muted" style="margin:6px 0 0">Before you arrive: ' + a[0] + ' of ' + a[1] + '</p>' + bar(a[0], a[1]) +
       '<p class="muted" style="margin:6px 0 0">First weeks: ' + b[0] + ' of ' + b[1] + '</p>' + bar(b[0], b[1]) +
@@ -427,6 +428,7 @@ function initials(n) { return String(n || '?').trim().split(/\s+/).map(function 
 function avatar(p) { var c = COLORS[(p.name || '').length % COLORS.length]; return '<div class="av" style="background:' + c + '">' + esc(initials(p.name)) + '</div>'; }
 function accounts() { return store.get('accounts', {}); }
 function me() { var s = store.get('session', null); return s ? accounts()[s] || null : null; }
+function viewer() { return me() || {guest:true, name:'', city:store.get('prefs', {}).city || '', school:''}; }
 function saveMe(u) { var a = accounts(); a[u.email] = u; store.set('accounts', a); }
 function hash(pw) {
   if (window.crypto && crypto.subtle) return crypto.subtle.digest('SHA-256', new TextEncoder().encode('dd:' + pw)).then(function (b) { return Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); });
@@ -476,11 +478,12 @@ function readProfile(fd, u) {
 }
 
 views.welcome = function () {
-  return {title:'DutchDoor', html:
+  return {title:'DutchDoor', back:'home', html:
     '<div class="card hero" style="text-align:center;padding:28px 18px"><img src="icons/icon.svg" width="72" height="72" alt=""><h2 style="margin-top:12px">Welcome to DutchDoor</h2><p>Your door to student life in the Netherlands. Find a safe room, get settled and meet other students.</p></div>' +
     '<div class="card"><ul class="list"><li>🔎 Search housing in 15 student cities</li><li>🛡️ Check if a room ad is a scam</li><li>👋 Meet students going to your city or school</li></ul></div>' +
     '<button class="btn block" onclick="location.hash=\'signup\'">Create student account</button>' +
-    '<button class="btn ghost block" style="margin-top:10px" onclick="location.hash=\'login\'">I already have an account</button>'
+    '<button class="btn ghost block" style="margin-top:10px" onclick="location.hash=\'login\'">I already have an account</button>' +
+    '<button class="btn ghost block" style="margin-top:10px;border-color:transparent" onclick="location.hash=\'home\'">Continue without account ›</button>'
   };
 };
 
@@ -551,7 +554,8 @@ views.profile = function () {
 };
 
 views.community = function () {
-  var u = me(), f = store.get('cf', 'city');
+  var u = viewer(), f = store.get('cf', 'city');
+  if (u.guest && (f === 'school' || (f === 'city' && !u.city))) f = 'all';
   var list = others().filter(function (p) {
     if (f === 'city') return p.city === u.city;
     if (f === 'school') return p.school.toLowerCase() === (u.school || '').toLowerCase();
@@ -561,8 +565,9 @@ views.community = function () {
   var cn = (city(u.city) || {}).name || 'my city';
   return {title:'Community', tab:'community', html:
     '<div class="card"><h3>Meet other students</h3><p class="muted">See who is going to study where. Find housemates or ask for tips.</p>' +
-    '<div class="chips">' + [['city','In ' + cn],['school','At ' + (u.school || 'my school')],['looking','Looking for a room'],['all','Everyone']].map(function (x) {
+    '<div class="chips">' + [['city','In ' + cn],['school','At ' + (u.school || 'my school')],['looking','Looking for a room'],['all','Everyone']].filter(function (x) { return !u.guest || (x[0] !== 'school' && (x[0] !== 'city' || u.city)); }).map(function (x) {
       return '<button class="chip' + (f === x[0] ? ' on' : '') + '" data-f="' + x[0] + '">' + esc(x[1]) + '</button>'; }).join('') + '</div></div>' +
+    (u.guest ? '<div class="card result"><p style="margin:0 0 8px">You are browsing as a guest. Create an account to send messages and be visible to other students.</p><button class="btn sm" onclick="location.hash=\'signup\'">Create account</button></div>' : '') +
     '<p class="muted">' + list.length + ' students · example profiles for this demo</p>' +
     (list.length ? list.map(function (p) {
       return '<div class="card person" onclick="location.hash=\'student/' + encodeURIComponent(p.id) + '\'">' + avatar(p) +
@@ -575,15 +580,16 @@ views.community = function () {
 
 views.student = function (id) {
   var p = person(decodeURIComponent(id)); if (!p) return views.community();
-  var u = me(), c = city(p.city) || {}, same = [];
-  if (p.city === u.city) same.push('same city'); if (p.school.toLowerCase() === (u.school || '').toLowerCase()) same.push('same school');
+  var u = viewer(), c = city(p.city) || {}, same = [];
+  if (u.city && p.city === u.city) same.push('same city'); if (u.school && p.school.toLowerCase() === u.school.toLowerCase()) same.push('same school');
   return {title:p.name.split(' ')[0], back:'community', tab:'community', html:
     '<div class="card" style="text-align:center">' + avatar(p).replace('class="av"', 'class="av" style="width:72px;height:72px;font-size:1.5rem;margin:0 auto 8px;background:' + COLORS[(p.name || '').length % COLORS.length] + '"') +
     '<h2>' + esc(p.name) + '</h2><p class="muted">' + (FLAG[p.country] || '') + ' From ' + esc(p.country) + '</p>' +
     (same.length ? '<span class="tag ok">You study in the ' + same.join(' & ') + '</span>' : '') + '</div>' +
     '<div class="card"><ul class="list"><li><b>School:</b> ' + esc(p.school) + '</li><li><b>Study:</b> ' + esc(p.study || '–') + '</li><li><b>City:</b> ' + esc(c.name || '') + '</li><li><b>Starts:</b> ' + esc(p.start || '–') + '</li>' +
     '<li><b>Housing:</b> ' + (p.looking ? 'Still looking for a room' : 'Has a room') + '</li></ul>' + (p.about ? '<p style="margin-top:10px">“' + esc(p.about) + '”</p>' : '') + '</div>' +
-    '<button class="btn block" onclick="location.hash=\'chat/' + encodeURIComponent(p.id) + '\'">💬 Send a message</button>' +
+    (u.guest ? '<button class="btn block" onclick="location.hash=\'signup\'">💬 Create an account to send a message</button>' :
+      '<button class="btn block" onclick="location.hash=\'chat/' + encodeURIComponent(p.id) + '\'">💬 Send a message</button>') +
     '<p class="muted" style="margin-top:12px">Never send money or your passport to someone you met online. Report strange messages to DutchDoor.</p>'
   };
 };
@@ -616,11 +622,15 @@ views.chat = function (id) {
 function render() {
   var parts = (location.hash.slice(1) || 'home').split('/');
   var auth = {welcome:1, signup:1, login:1}, u = me();
-  if (!u && !auth[parts[0]]) parts = ['welcome'];
+  if (!u && {profile:1, chat:1}[parts[0]]) parts = ['welcome'];
+  if (!u && !location.hash && !store.get('seenWelcome', false)) { parts = ['welcome']; store.set('seenWelcome', true); }
   if (u && auth[parts[0]]) parts = ['home'];
-  document.body.classList.toggle('out', !u);
+  document.body.classList.toggle('out', !!auth[parts[0]]);
   var $me = document.getElementById('me');
-  $me.hidden = !u; if (u) { $me.textContent = initials(u.name); $me.onclick = function () { go('profile'); }; }
+  $me.hidden = !!auth[parts[0]];
+  $me.textContent = u ? initials(u.name) : '👤';
+  $me.setAttribute('aria-label', u ? 'My profile and settings' : 'Log in or create account');
+  $me.onclick = function () { go(u ? 'profile' : 'welcome'); };
   var fn = views[parts[0]] || views.home;
   var v = fn(parts[1], parts[2]);
   $title.textContent = v.title;

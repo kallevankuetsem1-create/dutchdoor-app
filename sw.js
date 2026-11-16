@@ -1,5 +1,5 @@
 // Offline support: cache the app shell, serve it from cache, update in the background.
-var CACHE = 'dutchdoor-v3';
+var CACHE = 'dutchdoor-v4';
 var FILES = ['./', './index.html', './app.css', './app.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', function (e) {
