@@ -6,6 +6,25 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;back
 .appbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;background:#1F3A5F;color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;min-height:56px}
 .appbar h1{font-size:1.15rem;margin:0;font-weight:700}
 .back{background:none;border:0;color:#fff;font-size:2rem;line-height:1;padding:0 6px 4px 0;cursor:pointer}
+.avatar{margin-left:auto;width:36px;height:36px;border-radius:50%;border:2px solid #fff;background:#1F6FB2;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+body.out .tabs{display:none}
+.av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.05rem}
+.person{display:flex;gap:12px;align-items:center;cursor:pointer}
+.person .grow{flex:1;min-width:0}
+.idcard{background:linear-gradient(135deg,#1F3A5F,#1F6FB2);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.idcard h3{color:#fff;font-size:1.2rem;margin:10px 0 2px}
+.idcard .lbl{font-size:.72rem;opacity:.75;text-transform:uppercase;letter-spacing:.05em}
+.idcard .val{font-weight:600;margin-bottom:6px}
+.idcard .badge{position:absolute;top:16px;right:16px;background:#1E8E5A;color:#fff;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:700}
+.idcard .cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:10px}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0}
+.switch input{width:22px;height:22px;flex:none;accent-color:var(--blue)}
+.chat{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.msg{max-width:80%;padding:9px 13px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.msg.mine{align-self:flex-end;background:var(--blue);color:#fff;border-color:var(--blue)}
+.msg small{display:block;opacity:.65;font-size:.7rem;margin-top:2px}
+.sendbar{display:flex;gap:8px}
+.err{color:var(--warn);font-size:.9rem;margin-top:8px}
 main{padding:16px 16px calc(90px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto;outline:none}
 .tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
 .tabs button{flex:1;background:none;border:0;color:var(--muted);font-size:.72rem;padding:8px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-family:inherit}

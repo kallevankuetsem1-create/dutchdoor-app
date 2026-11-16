@@ -101,15 +101,16 @@ views.home = function () {
   var a = checklistProgress('before'), b = checklistProgress('first');
   var c = city(prefs.city);
   return {title:'DutchDoor', html:
-    '<div class="card hero"><h2>Welcome!</h2><p>Find a safe room and get settled in the Netherlands, step by step.</p>' +
+    '<div class="card hero"><h2>Hi ' + esc((me() || {name:''}).name.split(' ')[0]) + '! 👋</h2><p>Find a safe room and get settled in the Netherlands, step by step.</p>' +
     '<button class="btn" style="background:#fff;color:#1F3A5F" onclick="location.hash=\'search\'">Find a room</button></div>' +
     (c ? '<div class="card city" onclick="location.hash=\'city/' + c.id + '\'"><div><h3>Your city: ' + esc(c.name) + '</h3><span class="muted">Room about ' + eur(c.room) + ' / month</span></div><span class="price">›</span></div>' : '') +
     '<div class="grid2">' +
       '<button class="tile" onclick="location.hash=\'scam\'"><span class="ic">🛡️</span><b>Scam check</b><span>Is this ad real?</span></button>' +
       '<button class="tile" onclick="location.hash=\'budget\'"><span class="ic">💶</span><b>Budget</b><span>What can I pay?</span></button>' +
-      '<button class="tile" onclick="location.hash=\'tracker\'"><span class="ic">📌</span><b>Saved rooms</b><span>' + rooms.length + ' saved</span></button>' +
-      '<button class="tile" onclick="location.hash=\'rights\'"><span class="ic">⚖️</span><b>Your rights</b><span>Contract & rent check</span></button>' +
+      '<button class="tile" onclick="location.hash=\'community\'"><span class="ic">👋</span><b>Students</b><span>' + others().filter(function (x) { return x.city === (me() || {}).city; }).length + ' in your city</span></button>' +
+      '<button class="tile" onclick="location.hash=\'help\'"><span class="ic">🆘</span><b>Help</b><span>Rights, FAQ, 112</span></button>' +
     '</div>' +
+    (rooms.length ? '<div class="card city" onclick="location.hash=\'tracker\'"><div><h3>📌 Saved rooms</h3><span class="muted">' + rooms.length + ' saved</span></div><span class="price">›</span></div>' : '') +
     '<div class="card"><h3>Your progress</h3>' +
       '<p class="muted" style="margin:6px 0 0">Before you arrive: ' + a[0] + ' of ' + a[1] + '</p>' + bar(a[0], a[1]) +
       '<p class="muted" style="margin:6px 0 0">First weeks: ' + b[0] + ' of ' + b[1] + '</p>' + bar(b[0], b[1]) +
@@ -299,7 +300,7 @@ views.rights = function () {
 };
 
 views.help = function () {
-  return {title:'Help', tab:'help', html:
+  return {title:'Help', back:'home', html:
     '<div class="grid2">' +
       '<button class="tile" onclick="location.hash=\'scam\'"><span class="ic">🛡️</span><b>Scam check</b><span>Check an ad</span></button>' +
       '<button class="tile" onclick="location.hash=\'budget\'"><span class="ic">💶</span><b>Budget</b><span>Monthly costs</span></button>' +
@@ -319,17 +320,213 @@ views.steps = function () {
   return {title:'Step by step', back:'help', html:'<div class="card">' + s.map(function (x, i) { return '<div class="step" style="margin-bottom:12px"><b class="n">' + (i + 1) + '</b><div><h3>' + x[0] + '</h3><p class="muted">' + x[1] + '</p></div></div>'; }).join('') + '<button class="btn block" onclick="location.hash=\'search\'">Start searching</button></div>'};
 };
 
+/* ---------- accounts (demo: stored on this phone only) ---------- */
+var COLORS = ['#1F6FB2','#1E8E5A','#B9770E','#8E44AD','#C0392B','#16A085','#2C3E50','#D35400'];
+function initials(n) { return String(n || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase(); }
+function avatar(p) { var c = COLORS[(p.name || '').length % COLORS.length]; return '<div class="av" style="background:' + c + '">' + esc(initials(p.name)) + '</div>'; }
+function accounts() { return store.get('accounts', {}); }
+function me() { var s = store.get('session', null); return s ? accounts()[s] || null : null; }
+function saveMe(u) { var a = accounts(); a[u.email] = u; store.set('accounts', a); }
+function hash(pw) {
+  if (window.crypto && crypto.subtle) return crypto.subtle.digest('SHA-256', new TextEncoder().encode('dd:' + pw)).then(function (b) { return Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); });
+  return Promise.resolve('plain:' + pw);
+}
+var COUNTRIES = ['Belgium','Brazil','Bulgaria','China','France','Germany','Greece','India','Indonesia','Italy','Lithuania','Morocco','Netherlands','Nigeria','Poland','Portugal','Romania','Spain','Turkey','Ukraine','United Kingdom','United States','Vietnam','Other'];
+var FLAG = {Belgium:'🇧🇪',Brazil:'🇧🇷',Bulgaria:'🇧🇬',China:'🇨🇳',France:'🇫🇷',Germany:'🇩🇪',Greece:'🇬🇷',India:'🇮🇳',Indonesia:'🇮🇩',Italy:'🇮🇹',Lithuania:'🇱🇹',Morocco:'🇲🇦',Netherlands:'🇳🇱',Nigeria:'🇳🇬',Poland:'🇵🇱',Portugal:'🇵🇹',Romania:'🇷🇴',Spain:'🇪🇸',Turkey:'🇹🇷',Ukraine:'🇺🇦','United Kingdom':'🇬🇧','United States':'🇺🇸',Vietnam:'🇻🇳'};
+// Example profiles for the demo. Not real people.
+var DEMO = [
+  {id:'d1',name:'Lucía Fernández',country:'Spain',city:'den-bosch',school:'Avans',study:'International Business',start:'2027-09',looking:true,about:'Looking for a room in Den Bosch from September. Love cooking and padel!'},
+  {id:'d2',name:'Mateusz Nowak',country:'Poland',city:'den-bosch',school:'Koning Willem I College',study:'Real Estate',start:'2027-09',looking:true,about:'Want to share a house with 2–3 other students. Quiet but social.'},
+  {id:'d3',name:'Aisha Bello',country:'Nigeria',city:'eindhoven',school:'TU/e',study:'Data Science',start:'2027-08',looking:false,about:'Found a room at Vestide. Happy to give tips about Eindhoven!'},
+  {id:'d4',name:'Chen Wei',country:'China',city:'tilburg',school:'Tilburg University',study:'Economics',start:'2027-09',looking:true,about:'Arriving in August. Anyone want to look for a studio together?'},
+  {id:'d5',name:'Giulia Romano',country:'Italy',city:'utrecht',school:'UU',study:'Psychology',start:'2027-09',looking:true,about:'Registered at ROOM.nl. Searching in Utrecht or Zeist.'},
+  {id:'d6',name:'Arjun Mehta',country:'India',city:'delft',school:'TU Delft',study:'Civil Engineering',start:'2027-08',looking:true,about:'Masters student. Looking for housemates for a 3-bedroom place.'},
+  {id:'d7',name:'Léa Dubois',country:'France',city:'rotterdam',school:'Erasmus',study:'Law',start:'2027-09',looking:false,about:'Living in Kralingen. Ask me anything about Rotterdam.'},
+  {id:'d8',name:'Jonas Becker',country:'Germany',city:'groningen',school:'Hanze',study:'Facility Management',start:'2027-09',looking:true,about:'Want to arrive early to find a place. Cycling fan.'},
+  {id:'d9',name:'Elena Popescu',country:'Romania',city:'den-bosch',school:'JADS',study:'Data Science & Entrepreneurship',start:'2027-09',looking:false,about:'Already have a room in Rosmalen, happy to help you find one!'},
+  {id:'d10',name:'Mehmet Yılmaz',country:'Turkey',city:'amsterdam',school:'HvA',study:'Built Environment',start:'2027-09',looking:true,about:'Searching in Amsterdam and Diemen. Budget is tight 😅'},
+  {id:'d11',name:'Sofia Costa',country:'Portugal',city:'maastricht',school:'Maastricht University',study:'European Studies',start:'2027-08',looking:true,about:'Anyone else starting in Maastricht? Let\'s meet up!'},
+  {id:'d12',name:'Nguyen Thi Lan',country:'Vietnam',city:'breda',school:'BUas',study:'Tourism',start:'2027-09',looking:false,about:'Got housing through BUas. Ask me how it works.'}
+];
+var REPLIES = ['Hi! Nice to meet you 😊','Yes, I am still looking. Do you want to search together?','Good tip, thanks! I will check that website.','Let\'s meet at the intro week!','Sure, send me the link of the room.'];
+function others() {
+  var u = me(), list = DEMO.slice();
+  Object.keys(accounts()).forEach(function (k) { var a = accounts()[k]; if (a.visible && (!u || a.email !== u.email)) list.push({id:'u:' + a.email,name:a.name,country:a.country,city:a.city,school:a.school,study:a.study,start:a.start,looking:a.looking,about:a.about}); });
+  return list;
+}
+function person(id) { return others().filter(function (p) { return p.id === id; })[0]; }
+
+function profileFields(u) {
+  u = u || {};
+  return '<label class="f">Full name</label><input name="name" required value="' + esc(u.name) + '" autocomplete="name">' +
+    '<label class="f">Country of origin</label><select name="country" required><option value="">Choose…</option>' + COUNTRIES.map(function (c) { return '<option' + (c === u.country ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select>' +
+    '<label class="f">City where you will study</label><select name="city" required><option value="">Choose…</option>' + CITIES.map(function (c) { return '<option value="' + c.id + '"' + (c.id === u.city ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('') + '</select>' +
+    '<label class="f">School</label><input name="school" required value="' + esc(u.school) + '" placeholder="e.g. Avans">' +
+    '<label class="f">Study programme</label><input name="study" value="' + esc(u.study) + '" placeholder="e.g. Real Estate">' +
+    '<label class="f">Start date</label><input name="start" type="month" value="' + esc(u.start || '2027-09') + '">' +
+    '<label class="f">About you</label><textarea name="about" rows="2" placeholder="What kind of house or housemates are you looking for?">' + esc(u.about) + '</textarea>' +
+    '<label class="switch"><span>I am still looking for a room</span><input type="checkbox" name="looking"' + (u.looking !== false ? ' checked' : '') + '></label>' +
+    '<label class="switch"><span>Show my profile in the community</span><input type="checkbox" name="visible"' + (u.visible !== false ? ' checked' : '') + '></label>';
+}
+function readProfile(fd, u) {
+  ['name','country','city','school','study','start','about'].forEach(function (k) { u[k] = (fd.get(k) || '').trim(); });
+  u.looking = fd.get('looking') === 'on'; u.visible = fd.get('visible') === 'on';
+  return u;
+}
+
+views.welcome = function () {
+  return {title:'DutchDoor', html:
+    '<div class="card hero" style="text-align:center;padding:28px 18px"><img src="icons/icon.svg" width="72" height="72" alt=""><h2 style="margin-top:12px">Welcome to DutchDoor</h2><p>Your door to student life in the Netherlands. Find a safe room, get settled and meet other students.</p></div>' +
+    '<div class="card"><ul class="list"><li>🔎 Search housing in 15 student cities</li><li>🛡️ Check if a room ad is a scam</li><li>👋 Meet students going to your city or school</li></ul></div>' +
+    '<button class="btn block" onclick="location.hash=\'signup\'">Create student account</button>' +
+    '<button class="btn ghost block" style="margin-top:10px" onclick="location.hash=\'login\'">I already have an account</button>'
+  };
+};
+
+views.signup = function () {
+  return {title:'Create account', back:'welcome', html:
+    '<form class="card" id="sf"><h3>Your account</h3>' +
+    '<label class="f">Email</label><input name="email" type="email" required autocomplete="email" placeholder="you@student.nl">' +
+    '<label class="f">Password (min. 6 characters)</label><input name="pw" type="password" required minlength="6" autocomplete="new-password">' +
+    '<h3 style="margin-top:18px">About you</h3>' + profileFields() +
+    '<label class="switch"><span>I agree that my profile is visible to other DutchDoor students</span><input type="checkbox" name="agree" required></label>' +
+    '<div class="err" id="serr"></div><button class="btn block" style="margin-top:12px">Create account</button></form>' +
+    '<p class="muted" style="text-align:center">Demo: your account is only stored on this phone.</p>',
+    bind: function () {
+      document.getElementById('sf').onsubmit = function (e) {
+        e.preventDefault(); var fd = new FormData(e.target), email = fd.get('email').trim().toLowerCase();
+        if (accounts()[email]) { document.getElementById('serr').textContent = 'There is already an account with this email. Log in instead.'; return; }
+        hash(fd.get('pw')).then(function (h) {
+          var u = readProfile(fd, {email:email, pw:h, created:new Date().toISOString().slice(0, 10), id:'S' + String(Date.now()).slice(-7)});
+          saveMe(u); store.set('session', email);
+          var p = store.get('prefs', {city:'', budget:650, type:'room'}); p.city = u.city; store.set('prefs', p);
+          toast('Welcome, ' + u.name.split(' ')[0] + '!'); go('home');
+        });
+      };
+    }
+  };
+};
+
+views.login = function () {
+  return {title:'Log in', back:'welcome', html:
+    '<form class="card" id="lf"><label class="f" style="margin-top:0">Email</label><input name="email" type="email" required autocomplete="email">' +
+    '<label class="f">Password</label><input name="pw" type="password" required autocomplete="current-password">' +
+    '<div class="err" id="lerr"></div><button class="btn block" style="margin-top:14px">Log in</button></form>' +
+    '<p class="muted" style="text-align:center">No account yet? <a href="#signup">Create one</a></p>',
+    bind: function () {
+      document.getElementById('lf').onsubmit = function (e) {
+        e.preventDefault(); var fd = new FormData(e.target), email = fd.get('email').trim().toLowerCase(), a = accounts()[email];
+        hash(fd.get('pw')).then(function (h) {
+          if (!a || a.pw !== h) { document.getElementById('lerr').textContent = 'Email or password is not correct.'; return; }
+          store.set('session', email); toast('Welcome back, ' + a.name.split(' ')[0] + '!'); go('home');
+        });
+      };
+    }
+  };
+};
+
+views.profile = function () {
+  var u = me(), c = city(u.city) || {};
+  return {title:'My profile', back:'home', html:
+    '<div class="idcard"><span class="badge">✓ Student</span><div class="lbl">DutchDoor student card</div><h3>' + esc(u.name) + '</h3><div style="opacity:.85">' + esc(u.study || 'Student') + '</div>' +
+    '<div class="cols"><div><div class="lbl">School</div><div class="val">' + esc(u.school) + '</div></div><div><div class="lbl">City</div><div class="val">' + esc(c.name || '') + '</div></div>' +
+    '<div><div class="lbl">Student no.</div><div class="val">' + esc(u.id) + '</div></div><div><div class="lbl">From</div><div class="val">' + (FLAG[u.country] || '') + ' ' + esc(u.country) + '</div></div></div></div>' +
+    '<form class="card" id="pf"><h3>My details</h3><label class="f">Email</label><input value="' + esc(u.email) + '" disabled>' + profileFields(u) +
+    '<button class="btn block" style="margin-top:12px">Save changes</button></form>' +
+    '<div class="card"><h3>Settings</h3>' +
+    '<a class="city" style="text-decoration:none;color:inherit;padding:8px 0" href="#help"><span>Help & emergency numbers</span><span>›</span></a>' +
+    '<a class="city" style="text-decoration:none;color:inherit;padding:8px 0" href="#todo"><span>My to-do lists</span><span>›</span></a>' +
+    '<div class="row" style="margin-top:10px"><button class="btn ghost sm" id="logout">Log out</button><button class="btn danger sm" id="delacc">Delete account</button></div></div>' +
+    '<p class="muted" style="text-align:center">Member since ' + esc(u.created) + ' · Demo: data stays on this phone.</p>',
+    bind: function () {
+      document.getElementById('pf').onsubmit = function (e) { e.preventDefault(); saveMe(readProfile(new FormData(e.target), u)); toast('Profile saved'); render(); scrollTo(0, 0); };
+      document.getElementById('logout').onclick = function () { store.set('session', null); toast('Logged out'); go('welcome'); };
+      document.getElementById('delacc').onclick = function () {
+        if (!confirm('Delete your account and profile from this phone?')) return;
+        var a = accounts(); delete a[u.email]; store.set('accounts', a); store.set('session', null); toast('Account deleted'); go('welcome');
+      };
+    }
+  };
+};
+
+views.community = function () {
+  var u = me(), f = store.get('cf', 'city');
+  var list = others().filter(function (p) {
+    if (f === 'city') return p.city === u.city;
+    if (f === 'school') return p.school.toLowerCase() === (u.school || '').toLowerCase();
+    if (f === 'looking') return p.looking;
+    return true;
+  });
+  var cn = (city(u.city) || {}).name || 'my city';
+  return {title:'Community', tab:'community', html:
+    '<div class="card"><h3>Meet other students</h3><p class="muted">See who is going to study where. Find housemates or ask for tips.</p>' +
+    '<div class="chips">' + [['city','In ' + cn],['school','At ' + (u.school || 'my school')],['looking','Looking for a room'],['all','Everyone']].map(function (x) {
+      return '<button class="chip' + (f === x[0] ? ' on' : '') + '" data-f="' + x[0] + '">' + esc(x[1]) + '</button>'; }).join('') + '</div></div>' +
+    '<p class="muted">' + list.length + ' students · example profiles for this demo</p>' +
+    (list.length ? list.map(function (p) {
+      return '<div class="card person" onclick="location.hash=\'student/' + encodeURIComponent(p.id) + '\'">' + avatar(p) +
+        '<div class="grow"><h3>' + esc(p.name) + ' ' + (FLAG[p.country] || '') + '</h3><div class="muted">' + esc(p.school) + ' · ' + esc((city(p.city) || {}).name || '') + '</div>' +
+        (p.looking ? '<span class="tag mid">Looking for a room</span>' : '<span class="tag ok">Has a room</span>') + '</div><span>›</span></div>';
+    }).join('') : '<div class="empty">No students here yet.<br><button class="btn ghost sm" style="margin-top:10px" data-f="all">Show everyone</button></div>'),
+    bind: function () { document.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { store.set('cf', b.dataset.f); render(); }; }); }
+  };
+};
+
+views.student = function (id) {
+  var p = person(decodeURIComponent(id)); if (!p) return views.community();
+  var u = me(), c = city(p.city) || {}, same = [];
+  if (p.city === u.city) same.push('same city'); if (p.school.toLowerCase() === (u.school || '').toLowerCase()) same.push('same school');
+  return {title:p.name.split(' ')[0], back:'community', tab:'community', html:
+    '<div class="card" style="text-align:center">' + avatar(p).replace('class="av"', 'class="av" style="width:72px;height:72px;font-size:1.5rem;margin:0 auto 8px;background:' + COLORS[(p.name || '').length % COLORS.length] + '"') +
+    '<h2>' + esc(p.name) + '</h2><p class="muted">' + (FLAG[p.country] || '') + ' From ' + esc(p.country) + '</p>' +
+    (same.length ? '<span class="tag ok">You study in the ' + same.join(' & ') + '</span>' : '') + '</div>' +
+    '<div class="card"><ul class="list"><li><b>School:</b> ' + esc(p.school) + '</li><li><b>Study:</b> ' + esc(p.study || '–') + '</li><li><b>City:</b> ' + esc(c.name || '') + '</li><li><b>Starts:</b> ' + esc(p.start || '–') + '</li>' +
+    '<li><b>Housing:</b> ' + (p.looking ? 'Still looking for a room' : 'Has a room') + '</li></ul>' + (p.about ? '<p style="margin-top:10px">“' + esc(p.about) + '”</p>' : '') + '</div>' +
+    '<button class="btn block" onclick="location.hash=\'chat/' + encodeURIComponent(p.id) + '\'">💬 Send a message</button>' +
+    '<p class="muted" style="margin-top:12px">Never send money or your passport to someone you met online. Report strange messages to DutchDoor.</p>'
+  };
+};
+
+views.chat = function (id) {
+  id = decodeURIComponent(id); var p = person(id); if (!p) return views.community();
+  var u = me(), key = 'chat_' + u.email + '_' + id, msgs = store.get(key, []);
+  return {title:p.name, back:'student/' + encodeURIComponent(id), tab:'community', html:
+    '<div class="chat" id="msgs">' + (msgs.length ? msgs.map(function (m) { return '<div class="msg' + (m.me ? ' mine' : '') + '">' + esc(m.t) + '<small>' + esc(m.at) + '</small></div>'; }).join('') :
+      '<div class="empty">Say hi to ' + esc(p.name.split(' ')[0]) + '! 👋</div>') + '</div>' +
+    '<form class="sendbar" id="mf"><input name="t" required placeholder="Write a message…" autocomplete="off"><button class="btn">Send</button></form>' +
+    '<p class="muted" style="margin-top:10px">Demo: replies are automatic.</p>',
+    bind: function () {
+      scrollTo(0, document.body.scrollHeight);
+      document.getElementById('mf').onsubmit = function (e) {
+        e.preventDefault(); var t = e.target.t.value.trim(); if (!t) return;
+        var now = function () { return new Date().toTimeString().slice(0, 5); };
+        msgs.push({me:true, t:t, at:now()}); store.set(key, msgs); render();
+        if (id.indexOf('d') === 0) setTimeout(function () {
+          var m = store.get(key, []); m.push({me:false, t:REPLIES[(m.length >> 1) % REPLIES.length], at:now()}); store.set(key, m);
+          if (location.hash === '#chat/' + encodeURIComponent(id)) render();
+        }, 1200);
+        var i = document.querySelector('#mf input'); if (i) i.focus();
+      };
+    }
+  };
+};
+
 /* ---------- router ---------- */
 function render() {
   var parts = (location.hash.slice(1) || 'home').split('/');
+  var auth = {welcome:1, signup:1, login:1}, u = me();
+  if (!u && !auth[parts[0]]) parts = ['welcome'];
+  if (u && auth[parts[0]]) parts = ['home'];
+  document.body.classList.toggle('out', !u);
+  var $me = document.getElementById('me');
+  $me.hidden = !u; if (u) { $me.textContent = initials(u.name); $me.onclick = function () { go('profile'); }; }
   var fn = views[parts[0]] || views.home;
   var v = fn(parts[1], parts[2]);
   $title.textContent = v.title;
   $view.innerHTML = v.html;
   $back.hidden = !v.back;
   $back.onclick = function () { go(v.back); };
-  var tab = v.tab || (parts[0] in {home:1, search:1, tracker:1, todo:1, help:1} ? parts[0] : 'help');
-  if (parts[0] === 'home' || !views[parts[0]]) tab = 'home';
+  var tab = v.tab || (parts[0] in {home:1, search:1, tracker:1, todo:1, community:1} ? parts[0] : 'home');
   document.querySelectorAll('.tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === tab); });
   if (v.bind) v.bind();
 }
