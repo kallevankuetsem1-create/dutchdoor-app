@@ -49,12 +49,12 @@
     "howto_title": "How to", "step_of": "{list} · step {n} of {total}", "how_do": "How to do it", "what_bring": "What to bring",
     "tip": "Tip", "useful_links": "Useful links", "check_official": "Rules and prices change. Always check the official website.",
     "mark_done": "Mark as done", "done_undo": "✓ Done — mark as not done", "next": "Next: {x} ›",
-    "stuck": "Stuck? <a href=\"#help\">Ask DutchDoor</a> or <a href=\"#community\">ask other students</a>.",
+    "stuck": "Stuck? <a href=\"#help\">Ask Haven</a> or <a href=\"#community\">ask other students</a>.",
     "marked_not_done": "Marked as not done", "nice_done": "Nice, done! ✓",
 
     "todo_title": "To-do", "todo_intro": "Tap a task to see how to arrange it step by step.", "n_done": "{n} of {total} done",
     "how_arrange": "How to arrange this ›", "done_aria": "Done",
-    "pay_ok": "✅ Looks good. Still not sure? Contact DutchDoor.", "pay_warn": "⚠️ Do not pay until everything is checked.",
+    "pay_ok": "✅ Looks good. Still not sure? Contact Haven.", "pay_warn": "⚠️ Do not pay until everything is checked.",
 
     "scam_title": "Scam check", "scam_q_title": "Is this ad real?", "checking": "Checking: {x}.",
     "scam_intro": "Answer every question honestly. It takes 1 minute.",
@@ -79,25 +79,25 @@
     "r_rent_t": "Is your rent too high?", "r_rent": "For many rooms the maximum rent depends on a points system (size, kitchen, bathroom). Check it for free.",
     "r_rent_btn": "Huurcommissie rent check ↗",
     "r_dep_t": "Deposit", "r_dep": "There is a legal maximum and the landlord must pay it back soon after you move out. Check rijksoverheid.nl for the current rules.",
-    "r_prob_t": "Problems with your landlord?", "r_prob": "Talk to your landlord first and put everything in writing. Not working? Contact DutchDoor or the LSVb housing hotline.",
+    "r_prob_t": "Problems with your landlord?", "r_prob": "Talk to your landlord first and put everything in writing. Not working? Contact Haven or the LSVb housing hotline.",
 
     "help_title": "Help", "h_check_ad": "Check an ad", "h_monthly": "Monthly costs", "h_rights": "Your rights", "h_rights_sub": "Contract & rent",
     "h_steps": "Step by step", "h_steps_sub": "How to find a room",
     "emergency": "Emergency", "em_112": "📞 112 Emergency", "em_police": "Police 0900 8844", "em_fraud": "Fraudehelpdesk",
-    "questions": "Questions", "ask_dd": "Ask DutchDoor", "ask_text": "Not sure about a room or contract? Send us a message.",
+    "questions": "Questions", "ask_dd": "Ask Haven", "ask_text": "Not sure about a room or contract? Send us a message.",
     "your_q": "Your question", "send": "Send",
-    "disclaimer": "DutchDoor is a school project (Koning Willem I College). Always check rules on official government websites.",
+    "disclaimer": "Haven is a school project (Koning Willem I College). Always check rules on official government websites.",
     "sent_toast": "Thanks! (School project: message not really sent)",
 
     "steps_title": "Step by step", "start_searching": "Start searching",
 
-    "welcome_title": "Welcome to DutchDoor",
+    "welcome_title": "Welcome to Haven",
     "welcome_text": "Your door to student life in the Netherlands. Find a safe room, get settled and meet other students.",
     "w_li1": "🔎 Search housing in 15 student cities", "w_li2": "🛡️ Check if a room ad is a scam", "w_li3": "👋 Meet students going to your city or school",
     "create_student_account": "Create student account", "have_account": "I already have an account", "continue_guest": "Continue without account ›",
 
     "signup_title": "Create account", "your_account": "Your account", "email": "Email", "password_min": "Password (min. 6 characters)",
-    "about_you_h": "About you", "agree": "I agree that my profile is visible to other DutchDoor students",
+    "about_you_h": "About you", "agree": "I agree that my profile is visible to other Haven students",
     "email_exists": "There is already an account with this email. Log in instead.",
     "demo_stored": "Demo: your account is only stored on this phone.", "welcome_toast": "Welcome, {name}!",
 
@@ -109,7 +109,7 @@
     "about": "About you", "ph_about": "What kind of house or housemates are you looking for?",
     "still_looking": "I am still looking for a room", "show_profile": "Show my profile in the community",
 
-    "my_profile": "My profile", "student_badge": "✓ Student", "card_label": "DutchDoor student card", "student": "Student",
+    "my_profile": "My profile", "student_badge": "✓ Student", "card_label": "Haven student card", "student": "Student",
     "city": "City", "student_no": "Student no.", "from": "From", "my_details": "My details", "save_changes": "Save changes",
     "settings": "Settings", "help_em": "Help & emergency numbers", "my_todo": "My to-do lists", "log_out": "Log out",
     "delete_account": "Delete account", "member_since": "Member since {date} · Demo: data stays on this phone.",
@@ -128,7 +128,7 @@
     "lbl_school": "School:", "lbl_study": "Study:", "lbl_city": "City:", "lbl_starts": "Starts:", "lbl_housing": "Housing:",
     "still_looking_room": "Still looking for a room", "create_to_msg": "💬 Create an account to send a message",
     "send_msg": "💬 Send a message",
-    "safety": "Never send money or your passport to someone you met online. Report strange messages to DutchDoor.",
+    "safety": "Never send money or your passport to someone you met online. Report strange messages to Haven.",
 
     "say_hi": "Say hi to {name}! 👋", "write_msg": "Write a message…", "auto_replies": "Demo: replies are automatic."
   },
@@ -208,7 +208,7 @@
       "bring": ["Passport / ID", "Rental contract or landlord permission", "Birth certificate (if asked)"], "cost": "Free", "time": "5 minutes online", "links": ["Registering in the BRP (government.nl)"], "tip": "Some cities have a special desk for internationals with service in English.", "go": ""},
     "first-0": {"why": "Everyone who stays longer than 4 months must register at the municipality. This gives you a BSN.",
       "steps": ["Go to your appointment at the city hall (gemeente).", "Show your documents and fill in the form.", "You often get your BSN at the desk, or by post within a few days."],
-      "bring": ["Passport / ID", "Rental contract or signed permission from your landlord", "Birth certificate (if asked)", "Residence permit (non-EU)"], "cost": "Free", "time": "Appointment: 15–30 min", "links": ["Registering in the BRP (government.nl)"], "tip": "Your landlord does not allow you to register? That is a red flag. Ask DutchDoor for help.", "go": ""},
+      "bring": ["Passport / ID", "Rental contract or signed permission from your landlord", "Birth certificate (if asked)", "Residence permit (non-EU)"], "cost": "Free", "time": "Appointment: 15–30 min", "links": ["Registering in the BRP (government.nl)"], "tip": "Your landlord does not allow you to register? That is a red flag. Ask Haven for help.", "go": ""},
     "first-1": {"why": "Your BSN (citizen service number) is your personal number for the government, the bank, work, the doctor and insurance.",
       "steps": ["You get your BSN when you register at the city hall.", "Write it down and keep the letter in a safe place.", "Only give your BSN to official organisations (employer, bank, insurer, government)."],
       "bring": [], "cost": "Free", "time": "Usually within a week after registering", "links": ["What is a BSN? (government.nl)"], "tip": "Never send a photo of your BSN or passport to a landlord you have not met.", "go": ""},
@@ -246,7 +246,7 @@
       "steps": ["Go to kvk.nl and search for the name of the agency.", "Check that the address and KvK number match their website and contract.", "Not registered? Do not pay."],
       "bring": [], "cost": "Free", "time": "5 minutes", "links": ["KvK search"], "tip": "An agency may not charge you agency fees if it also works for the landlord.", "go": ""},
     "pay-5": {"why": "A written contract protects you. Without one it is hard to prove anything.",
-      "steps": ["Ask for the contract before you pay anything.", "Check: start date, length, rent, service costs, deposit and notice period.", "Do you not understand something? Ask DutchDoor or your school to check it."],
+      "steps": ["Ask for the contract before you pay anything.", "Check: start date, length, rent, service costs, deposit and notice period.", "Do you not understand something? Ask Haven or your school to check it."],
       "bring": [], "cost": "Free", "time": "", "links": ["Check your rent (Huurcommissie)"], "tip": "Pay the deposit by bank transfer, never in cash.", "go": "Your rights"},
     "pay-6": {"why": "Without registration at the city hall you get no BSN. Then you cannot work, open a bank account or get insurance.",
       "steps": ["Ask the landlord in writing: \"Can I register at this address?\"", "Make sure this is also in your contract.", "Is the answer no? Look for another room."],

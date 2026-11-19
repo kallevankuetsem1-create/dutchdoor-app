@@ -1,6 +1,6 @@
 {
-  "name": "DutchDoor – Student housing NL",
-  "short_name": "DutchDoor",
+  "name": "Haven – Student housing NL",
+  "short_name": "Haven",
   "description": "Find a safe room and get settled as an international student in the Netherlands.",
   "start_url": "./index.html",
   "scope": "./",

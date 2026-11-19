@@ -49,12 +49,12 @@
     "howto_title": "Zo regel je het", "step_of": "{list} · stap {n} van {total}", "how_do": "Zo doe je het", "what_bring": "Wat neem je mee",
     "tip": "Tip", "useful_links": "Handige links", "check_official": "Regels en prijzen veranderen. Kijk altijd op de officiële website.",
     "mark_done": "Markeer als klaar", "done_undo": "✓ Klaar — markeer als niet klaar", "next": "Volgende: {x} ›",
-    "stuck": "Kom je er niet uit? <a href=\"#help\">Vraag het DutchDoor</a> of <a href=\"#community\">vraag andere studenten</a>.",
+    "stuck": "Kom je er niet uit? <a href=\"#help\">Vraag het Haven</a> of <a href=\"#community\">vraag andere studenten</a>.",
     "marked_not_done": "Gemarkeerd als niet klaar", "nice_done": "Goed zo, klaar! ✓",
 
     "todo_title": "To-do", "todo_intro": "Tik op een taak om stap voor stap te zien hoe je het regelt.", "n_done": "{n} van {total} klaar",
     "how_arrange": "Zo regel je dit ›", "done_aria": "Klaar",
-    "pay_ok": "✅ Ziet er goed uit. Twijfel je nog? Neem contact op met DutchDoor.", "pay_warn": "⚠️ Betaal pas als alles is gecontroleerd.",
+    "pay_ok": "✅ Ziet er goed uit. Twijfel je nog? Neem contact op met Haven.", "pay_warn": "⚠️ Betaal pas als alles is gecontroleerd.",
 
     "scam_title": "Oplichtingscheck", "scam_q_title": "Is deze advertentie echt?", "checking": "We checken: {x}.",
     "scam_intro": "Beantwoord elke vraag eerlijk. Het duurt 1 minuut.",
@@ -79,25 +79,25 @@
     "r_rent_t": "Is je huur te hoog?", "r_rent": "Voor veel kamers hangt de maximale huur af van een puntensysteem (grootte, keuken, badkamer). Check het gratis.",
     "r_rent_btn": "Huurprijscheck Huurcommissie ↗",
     "r_dep_t": "Borg", "r_dep": "Er is een wettelijk maximum en de verhuurder moet de borg snel terugbetalen nadat je bent verhuisd. Kijk op rijksoverheid.nl voor de actuele regels.",
-    "r_prob_t": "Problemen met je verhuurder?", "r_prob": "Praat eerst met je verhuurder en zet alles op papier. Lukt het niet? Neem contact op met DutchDoor of de LSVb-huurhulplijn.",
+    "r_prob_t": "Problemen met je verhuurder?", "r_prob": "Praat eerst met je verhuurder en zet alles op papier. Lukt het niet? Neem contact op met Haven of de LSVb-huurhulplijn.",
 
     "help_title": "Hulp", "h_check_ad": "Check een advertentie", "h_monthly": "Maandelijkse kosten", "h_rights": "Jouw rechten", "h_rights_sub": "Contract & huur",
     "h_steps": "Stap voor stap", "h_steps_sub": "Zo vind je een kamer",
     "emergency": "Noodgeval", "em_112": "📞 112 Noodnummer", "em_police": "Politie 0900 8844", "em_fraud": "Fraudehelpdesk",
-    "questions": "Vragen", "ask_dd": "Vraag het DutchDoor", "ask_text": "Twijfel je over een kamer of contract? Stuur ons een bericht.",
+    "questions": "Vragen", "ask_dd": "Vraag het Haven", "ask_text": "Twijfel je over een kamer of contract? Stuur ons een bericht.",
     "your_q": "Jouw vraag", "send": "Versturen",
-    "disclaimer": "DutchDoor is een schoolproject (Koning Willem I College). Controleer regels altijd op officiële websites van de overheid.",
+    "disclaimer": "Haven is een schoolproject (Koning Willem I College). Controleer regels altijd op officiële websites van de overheid.",
     "sent_toast": "Bedankt! (Schoolproject: het bericht wordt niet echt verstuurd)",
 
     "steps_title": "Stap voor stap", "start_searching": "Begin met zoeken",
 
-    "welcome_title": "Welkom bij DutchDoor",
+    "welcome_title": "Welkom bij Haven",
     "welcome_text": "Jouw deur naar het studentenleven in Nederland. Vind een veilige kamer, raak gesetteld en ontmoet andere studenten.",
     "w_li1": "🔎 Zoek woonruimte in 15 studentensteden", "w_li2": "🛡️ Check of een kameradvertentie oplichting is", "w_li3": "👋 Ontmoet studenten die naar jouw stad of school gaan",
     "create_student_account": "Studentenaccount aanmaken", "have_account": "Ik heb al een account", "continue_guest": "Doorgaan zonder account ›",
 
     "signup_title": "Account aanmaken", "your_account": "Jouw account", "email": "E-mail", "password_min": "Wachtwoord (min. 6 tekens)",
-    "about_you_h": "Over jou", "agree": "Ik ga ermee akkoord dat mijn profiel zichtbaar is voor andere DutchDoor-studenten",
+    "about_you_h": "Over jou", "agree": "Ik ga ermee akkoord dat mijn profiel zichtbaar is voor andere Haven-studenten",
     "email_exists": "Er bestaat al een account met dit e-mailadres. Log in plaats daarvan in.",
     "demo_stored": "Demo: je account wordt alleen op deze telefoon opgeslagen.", "welcome_toast": "Welkom, {name}!",
 
@@ -109,7 +109,7 @@
     "about": "Over jou", "ph_about": "Wat voor huis of huisgenoten zoek je?",
     "still_looking": "Ik zoek nog een kamer", "show_profile": "Toon mijn profiel in de community",
 
-    "my_profile": "Mijn profiel", "student_badge": "✓ Student", "card_label": "DutchDoor-studentenkaart", "student": "Student",
+    "my_profile": "Mijn profiel", "student_badge": "✓ Student", "card_label": "Haven-studentenkaart", "student": "Student",
     "city": "Stad", "student_no": "Studentnr.", "from": "Uit", "my_details": "Mijn gegevens", "save_changes": "Wijzigingen opslaan",
     "settings": "Instellingen", "help_em": "Hulp & noodnummers", "my_todo": "Mijn to-do-lijsten", "log_out": "Uitloggen",
     "delete_account": "Account verwijderen", "member_since": "Lid sinds {date} · Demo: gegevens blijven op deze telefoon.",
@@ -128,7 +128,7 @@
     "lbl_school": "School:", "lbl_study": "Opleiding:", "lbl_city": "Stad:", "lbl_starts": "Begint:", "lbl_housing": "Woonruimte:",
     "still_looking_room": "Zoekt nog een kamer", "create_to_msg": "💬 Maak een account om een bericht te sturen",
     "send_msg": "💬 Stuur een bericht",
-    "safety": "Stuur nooit geld of je paspoort naar iemand die je online hebt ontmoet. Meld vreemde berichten bij DutchDoor.",
+    "safety": "Stuur nooit geld of je paspoort naar iemand die je online hebt ontmoet. Meld vreemde berichten bij Haven.",
 
     "say_hi": "Zeg hoi tegen {name}! 👋", "write_msg": "Schrijf een bericht…", "auto_replies": "Demo: antwoorden zijn automatisch."
   },
@@ -208,7 +208,7 @@
       "bring": ["Paspoort / id-kaart", "Huurcontract of toestemming van de verhuurder", "Geboorteakte (als daarom gevraagd wordt)"], "cost": "Gratis", "time": "5 minuten online", "links": ["Inschrijven in de BRP (government.nl)"], "tip": "Sommige steden hebben een speciaal loket voor internationals met service in het Engels.", "go": ""},
     "first-0": {"why": "Iedereen die langer dan 4 maanden blijft, moet zich inschrijven bij de gemeente. Zo krijg je een BSN.",
       "steps": ["Ga naar je afspraak bij de gemeente.", "Laat je documenten zien en vul het formulier in.", "Je krijgt je BSN vaak direct aan de balie, of binnen een paar dagen per post."],
-      "bring": ["Paspoort / id-kaart", "Huurcontract of ondertekende toestemming van je verhuurder", "Geboorteakte (als daarom gevraagd wordt)", "Verblijfsvergunning (buiten de EU)"], "cost": "Gratis", "time": "Afspraak: 15–30 min", "links": ["Inschrijven in de BRP (government.nl)"], "tip": "Mag je je niet inschrijven van je verhuurder? Dat is een rode vlag. Vraag DutchDoor om hulp.", "go": ""},
+      "bring": ["Paspoort / id-kaart", "Huurcontract of ondertekende toestemming van je verhuurder", "Geboorteakte (als daarom gevraagd wordt)", "Verblijfsvergunning (buiten de EU)"], "cost": "Gratis", "time": "Afspraak: 15–30 min", "links": ["Inschrijven in de BRP (government.nl)"], "tip": "Mag je je niet inschrijven van je verhuurder? Dat is een rode vlag. Vraag Haven om hulp.", "go": ""},
     "first-1": {"why": "Je BSN (burgerservicenummer) is je persoonlijke nummer voor de overheid, de bank, werk, de huisarts en verzekeringen.",
       "steps": ["Je krijgt je BSN als je je inschrijft bij de gemeente.", "Schrijf het op en bewaar de brief op een veilige plek.", "Geef je BSN alleen aan officiële organisaties (werkgever, bank, verzekeraar, overheid)."],
       "bring": [], "cost": "Gratis", "time": "Meestal binnen een week na inschrijving", "links": ["Wat is een BSN? (government.nl)"], "tip": "Stuur nooit een foto van je BSN of paspoort naar een verhuurder die je niet hebt ontmoet.", "go": ""},
@@ -246,7 +246,7 @@
       "steps": ["Ga naar kvk.nl en zoek op de naam van het bureau.", "Controleer of het adres en het KvK-nummer overeenkomen met hun website en contract.", "Niet ingeschreven? Betaal niet."],
       "bring": [], "cost": "Gratis", "time": "5 minuten", "links": ["KvK zoeken"], "tip": "Een bureau mag jou geen bemiddelingskosten rekenen als het ook voor de verhuurder werkt.", "go": ""},
     "pay-5": {"why": "Een schriftelijk contract beschermt je. Zonder contract is het moeilijk om iets te bewijzen.",
-      "steps": ["Vraag om het contract voordat je iets betaalt.", "Controleer: startdatum, duur, huur, servicekosten, borg en opzegtermijn.", "Begrijp je iets niet? Vraag DutchDoor of je school om het te controleren."],
+      "steps": ["Vraag om het contract voordat je iets betaalt.", "Controleer: startdatum, duur, huur, servicekosten, borg en opzegtermijn.", "Begrijp je iets niet? Vraag Haven of je school om het te controleren."],
       "bring": [], "cost": "Gratis", "time": "", "links": ["Check je huur (Huurcommissie)"], "tip": "Betaal de borg per bankoverschrijving, nooit contant.", "go": "Jouw rechten"},
     "pay-6": {"why": "Zonder inschrijving bij de gemeente krijg je geen BSN. Dan kun je niet werken, geen bankrekening openen en geen verzekering afsluiten.",
       "steps": ["Vraag de verhuurder schriftelijk: \"Mag ik me op dit adres inschrijven?\"", "Zorg dat dit ook in je contract staat.", "Is het antwoord nee? Zoek een andere kamer."],

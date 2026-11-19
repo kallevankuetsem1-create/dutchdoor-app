@@ -49,12 +49,12 @@
     "howto_title": "Jak to załatwić", "step_of": "{list} · krok {n} z {total}", "how_do": "Jak to zrobić", "what_bring": "Co zabrać",
     "tip": "Wskazówka", "useful_links": "Przydatne linki", "check_official": "Przepisy i ceny się zmieniają. Zawsze sprawdzaj oficjalną stronę.",
     "mark_done": "Oznacz jako zrobione", "done_undo": "✓ Zrobione — oznacz jako niezrobione", "next": "Dalej: {x} ›",
-    "stuck": "Utknąłeś/-ęłaś? <a href=\"#help\">Zapytaj DutchDoor</a> lub <a href=\"#community\">zapytaj innych studentów</a>.",
+    "stuck": "Utknąłeś/-ęłaś? <a href=\"#help\">Zapytaj Haven</a> lub <a href=\"#community\">zapytaj innych studentów</a>.",
     "marked_not_done": "Oznaczono jako niezrobione", "nice_done": "Super, zrobione! ✓",
 
     "todo_title": "Do zrobienia", "todo_intro": "Dotknij zadania, aby zobaczyć krok po kroku, jak je załatwić.", "n_done": "Zrobione: {n} z {total}",
     "how_arrange": "Jak to załatwić ›", "done_aria": "Zrobione",
-    "pay_ok": "✅ Wygląda dobrze. Masz jeszcze wątpliwości? Skontaktuj się z DutchDoor.", "pay_warn": "⚠️ Nie płać, dopóki wszystkiego nie sprawdzisz.",
+    "pay_ok": "✅ Wygląda dobrze. Masz jeszcze wątpliwości? Skontaktuj się z Haven.", "pay_warn": "⚠️ Nie płać, dopóki wszystkiego nie sprawdzisz.",
 
     "scam_title": "Test na oszustwo", "scam_q_title": "Czy to ogłoszenie jest prawdziwe?", "checking": "Sprawdzamy: {x}.",
     "scam_intro": "Odpowiedz szczerze na każde pytanie. To zajmie 1 minutę.",
@@ -79,25 +79,25 @@
     "r_rent_t": "Czy twój czynsz jest za wysoki?", "r_rent": "W przypadku wielu pokoi maksymalny czynsz zależy od systemu punktowego (wielkość, kuchnia, łazienka). Sprawdź to za darmo.",
     "r_rent_btn": "Kalkulator czynszu Huurcommissie ↗",
     "r_dep_t": "Kaucja", "r_dep": "Istnieje ustawowy limit, a wynajmujący musi zwrócić kaucję wkrótce po twojej wyprowadzce. Aktualne przepisy znajdziesz na rijksoverheid.nl.",
-    "r_prob_t": "Problemy z wynajmującym?", "r_prob": "Najpierw porozmawiaj z wynajmującym i wszystko zapisuj na piśmie. Nie działa? Skontaktuj się z DutchDoor lub infolinią mieszkaniową LSVb.",
+    "r_prob_t": "Problemy z wynajmującym?", "r_prob": "Najpierw porozmawiaj z wynajmującym i wszystko zapisuj na piśmie. Nie działa? Skontaktuj się z Haven lub infolinią mieszkaniową LSVb.",
 
     "help_title": "Pomoc", "h_check_ad": "Sprawdź ogłoszenie", "h_monthly": "Koszty miesięczne", "h_rights": "Twoje prawa", "h_rights_sub": "Umowa i czynsz",
     "h_steps": "Krok po kroku", "h_steps_sub": "Jak znaleźć pokój",
     "emergency": "Nagłe wypadki", "em_112": "📞 112 Numer alarmowy", "em_police": "Policja 0900 8844", "em_fraud": "Fraudehelpdesk",
-    "questions": "Pytania", "ask_dd": "Zapytaj DutchDoor", "ask_text": "Masz wątpliwości co do pokoju lub umowy? Napisz do nas.",
+    "questions": "Pytania", "ask_dd": "Zapytaj Haven", "ask_text": "Masz wątpliwości co do pokoju lub umowy? Napisz do nas.",
     "your_q": "Twoje pytanie", "send": "Wyślij",
-    "disclaimer": "DutchDoor to projekt szkolny (Koning Willem I College). Zawsze sprawdzaj przepisy na oficjalnych stronach rządowych.",
+    "disclaimer": "Haven to projekt szkolny (Koning Willem I College). Zawsze sprawdzaj przepisy na oficjalnych stronach rządowych.",
     "sent_toast": "Dziękujemy! (Projekt szkolny: wiadomość nie jest naprawdę wysyłana)",
 
     "steps_title": "Krok po kroku", "start_searching": "Zacznij szukać",
 
-    "welcome_title": "Witamy w DutchDoor",
+    "welcome_title": "Witamy w Haven",
     "welcome_text": "Twoje drzwi do studenckiego życia w Holandii. Znajdź bezpieczny pokój, urządź się i poznaj innych studentów.",
     "w_li1": "🔎 Szukaj mieszkania w 15 miastach studenckich", "w_li2": "🛡️ Sprawdź, czy ogłoszenie o pokoju to oszustwo", "w_li3": "👋 Poznaj studentów, którzy jadą do twojego miasta lub na twoją uczelnię",
     "create_student_account": "Załóż konto studenta", "have_account": "Mam już konto", "continue_guest": "Kontynuuj bez konta ›",
 
     "signup_title": "Załóż konto", "your_account": "Twoje konto", "email": "E-mail", "password_min": "Hasło (min. 6 znaków)",
-    "about_you_h": "O tobie", "agree": "Zgadzam się, aby mój profil był widoczny dla innych studentów DutchDoor",
+    "about_you_h": "O tobie", "agree": "Zgadzam się, aby mój profil był widoczny dla innych studentów Haven",
     "email_exists": "Konto z tym adresem e-mail już istnieje. Zaloguj się.",
     "demo_stored": "Demo: twoje konto jest zapisane tylko na tym telefonie.", "welcome_toast": "Witaj, {name}!",
 
@@ -109,7 +109,7 @@
     "about": "O tobie", "ph_about": "Jakiego mieszkania lub współlokatorów szukasz?",
     "still_looking": "Nadal szukam pokoju", "show_profile": "Pokazuj mój profil w społeczności",
 
-    "my_profile": "Mój profil", "student_badge": "✓ Student", "card_label": "Legitymacja studencka DutchDoor", "student": "Student",
+    "my_profile": "Mój profil", "student_badge": "✓ Student", "card_label": "Legitymacja studencka Haven", "student": "Student",
     "city": "Miasto", "student_no": "Nr studenta", "from": "Pochodzenie", "my_details": "Moje dane", "save_changes": "Zapisz zmiany",
     "settings": "Ustawienia", "help_em": "Pomoc i numery alarmowe", "my_todo": "Moje listy zadań", "log_out": "Wyloguj się",
     "delete_account": "Usuń konto", "member_since": "Konto założone: {date} · Demo: dane zostają na tym telefonie.",
@@ -128,7 +128,7 @@
     "lbl_school": "Uczelnia:", "lbl_study": "Kierunek:", "lbl_city": "Miasto:", "lbl_starts": "Początek:", "lbl_housing": "Mieszkanie:",
     "still_looking_room": "Nadal szuka pokoju", "create_to_msg": "💬 Załóż konto, aby wysłać wiadomość",
     "send_msg": "💬 Wyślij wiadomość",
-    "safety": "Nigdy nie wysyłaj pieniędzy ani paszportu komuś, kogo poznałeś/-aś w internecie. Zgłaszaj dziwne wiadomości do DutchDoor.",
+    "safety": "Nigdy nie wysyłaj pieniędzy ani paszportu komuś, kogo poznałeś/-aś w internecie. Zgłaszaj dziwne wiadomości do Haven.",
 
     "say_hi": "Rozmowa: {name}. Przywitaj się! 👋", "write_msg": "Napisz wiadomość…", "auto_replies": "Demo: odpowiedzi są automatyczne."
   },
@@ -208,7 +208,7 @@
       "bring": ["Paszport / dowód osobisty", "Umowa najmu lub zgoda wynajmującego", "Akt urodzenia (jeśli jest wymagany)"], "cost": "Bezpłatnie", "time": "5 minut online", "links": ["Zameldowanie w BRP (government.nl)"], "tip": "Niektóre miasta mają specjalne okienko dla obcokrajowców z obsługą po angielsku.", "go": ""},
     "first-0": {"why": "Każdy, kto zostaje dłużej niż 4 miesiące, musi zameldować się w urzędzie gminy. Dzięki temu dostajesz numer BSN.",
       "steps": ["Przyjdź na umówioną wizytę w urzędzie gminy (gemeente).", "Pokaż dokumenty i wypełnij formularz.", "Numer BSN często dostajesz od razu w okienku albo pocztą w ciągu kilku dni."],
-      "bring": ["Paszport / dowód osobisty", "Umowa najmu lub podpisana zgoda wynajmującego", "Akt urodzenia (jeśli jest wymagany)", "Zezwolenie na pobyt (spoza UE)"], "cost": "Bezpłatnie", "time": "Wizyta: 15–30 min", "links": ["Zameldowanie w BRP (government.nl)"], "tip": "Wynajmujący nie pozwala ci się zameldować? To sygnał ostrzegawczy. Poproś DutchDoor o pomoc.", "go": ""},
+      "bring": ["Paszport / dowód osobisty", "Umowa najmu lub podpisana zgoda wynajmującego", "Akt urodzenia (jeśli jest wymagany)", "Zezwolenie na pobyt (spoza UE)"], "cost": "Bezpłatnie", "time": "Wizyta: 15–30 min", "links": ["Zameldowanie w BRP (government.nl)"], "tip": "Wynajmujący nie pozwala ci się zameldować? To sygnał ostrzegawczy. Poproś Haven o pomoc.", "go": ""},
     "first-1": {"why": "BSN (numer obywatela) to twój osobisty numer w urzędach, banku, pracy, u lekarza i w ubezpieczeniach.",
       "steps": ["Numer BSN dostajesz przy zameldowaniu w urzędzie gminy.", "Zapisz go i przechowuj list w bezpiecznym miejscu.", "Podawaj BSN tylko oficjalnym instytucjom (pracodawca, bank, ubezpieczyciel, urzędy)."],
       "bring": [], "cost": "Bezpłatnie", "time": "Zwykle w ciągu tygodnia od zameldowania", "links": ["Czym jest BSN? (government.nl)"], "tip": "Nigdy nie wysyłaj zdjęcia BSN ani paszportu wynajmującemu, którego nie spotkałeś/-aś osobiście.", "go": ""},
@@ -246,7 +246,7 @@
       "steps": ["Wejdź na kvk.nl i wyszukaj nazwę agencji.", "Sprawdź, czy adres i numer KvK zgadzają się z ich stroną i umową.", "Nie ma jej w rejestrze? Nie płać."],
       "bring": [], "cost": "Bezpłatnie", "time": "5 minut", "links": ["Wyszukiwarka KvK"], "tip": "Agencja nie może pobierać od ciebie prowizji, jeśli pracuje też dla wynajmującego.", "go": ""},
     "pay-5": {"why": "Pisemna umowa cię chroni. Bez niej trudno czegokolwiek dowieść.",
-      "steps": ["Poproś o umowę, zanim cokolwiek zapłacisz.", "Sprawdź: datę rozpoczęcia, okres najmu, czynsz, opłaty za usługi, kaucję i okres wypowiedzenia.", "Czegoś nie rozumiesz? Poproś DutchDoor lub swoją uczelnię o sprawdzenie umowy."],
+      "steps": ["Poproś o umowę, zanim cokolwiek zapłacisz.", "Sprawdź: datę rozpoczęcia, okres najmu, czynsz, opłaty za usługi, kaucję i okres wypowiedzenia.", "Czegoś nie rozumiesz? Poproś Haven lub swoją uczelnię o sprawdzenie umowy."],
       "bring": [], "cost": "Bezpłatnie", "time": "", "links": ["Sprawdź swój czynsz (Huurcommissie)"], "tip": "Płać kaucję przelewem, nigdy gotówką.", "go": "Twoje prawa"},
     "pay-6": {"why": "Bez zameldowania w urzędzie gminy nie dostaniesz numeru BSN. Wtedy nie możesz pracować, otworzyć konta bankowego ani wykupić ubezpieczenia.",
       "steps": ["Zapytaj wynajmującego na piśmie: „Czy mogę zameldować się pod tym adresem?”", "Upewnij się, że jest to też zapisane w umowie.", "Odpowiedź brzmi „nie”? Szukaj innego pokoju."],

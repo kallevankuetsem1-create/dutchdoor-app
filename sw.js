@@ -1,5 +1,5 @@
 // Offline support: cache the app shell, serve it from cache, update in the background.
-var CACHE = 'dutchdoor-v5';
+var CACHE = 'haven-v6';
 var FILES = ['./', './index.html', './app.css', './app.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
   './lang/en.json', './lang/nl.json', './lang/de.json', './lang/es.json', './lang/pl.json'];
 

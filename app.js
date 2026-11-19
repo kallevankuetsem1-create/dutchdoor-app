@@ -1,4 +1,4 @@
-/* DutchDoor app — works offline, data is stored on the phone (localStorage).
+/* Haven app — works offline, data is stored on the phone (localStorage).
    All texts live in lang/<code>.json. English (en.json) is the base and the fallback. */
 (function () {
 'use strict';
@@ -131,7 +131,7 @@ views.home = function () {
   var rooms = store.get('rooms', []);
   var a = checklistProgress('before'), b = checklistProgress('first');
   var c = city(prefs.city), u = me(), vw = viewer();
-  return {title:'DutchDoor', html:
+  return {title:'Haven', html:
     '<div class="card hero"><h2>' + (u ? t('home_hi', {name:firstName(u.name)}) : t('home_welcome')) + '</h2><p>' + t('home_intro') + '</p>' +
     '<button class="btn" style="background:#fff;color:#1F3A5F" onclick="location.hash=\'search\'">' + t('find_room') + '</button></div>' +
     (c ? '<div class="card city" onclick="location.hash=\'city/' + c.id + '\'"><div><h3>' + t('your_city', {city:esc(cityName(c))}) + '</h3><span class="muted">' + t('room_about', {price:eur(c.room)}) + '</span></div><span class="price">›</span></div>' : '') +
@@ -442,7 +442,7 @@ function readProfile(fd, u) {
 }
 
 views.welcome = function () {
-  return {title:'DutchDoor', back:'home', html:
+  return {title:'Haven', back:'home', html:
     '<div class="card"><h3 style="margin-bottom:0">🌐 ' + t('language') + '</h3>' + langPicker() + '</div>' +
     '<div class="card hero" style="text-align:center;padding:28px 18px"><img src="icons/icon.svg" width="72" height="72" alt=""><h2 style="margin-top:12px">' + t('welcome_title') + '</h2><p>' + t('welcome_text') + '</p></div>' +
     '<div class="card"><ul class="list"><li>' + t('w_li1') + '</li><li>' + t('w_li2') + '</li><li>' + t('w_li3') + '</li></ul></div>' +

@@ -49,12 +49,12 @@
     "howto_title": "Cómo hacerlo", "step_of": "{list} · paso {n} de {total}", "how_do": "Cómo hacerlo", "what_bring": "Qué tienes que llevar",
     "tip": "Consejo", "useful_links": "Enlaces útiles", "check_official": "Las normas y los precios cambian. Consulta siempre la web oficial.",
     "mark_done": "Marcar como hecho", "done_undo": "✓ Hecho — marcar como no hecho", "next": "Siguiente: {x} ›",
-    "stuck": "¿Te has atascado? <a href=\"#help\">Pregunta a DutchDoor</a> o <a href=\"#community\">pregunta a otros estudiantes</a>.",
+    "stuck": "¿Te has atascado? <a href=\"#help\">Pregunta a Haven</a> o <a href=\"#community\">pregunta a otros estudiantes</a>.",
     "marked_not_done": "Marcado como no hecho", "nice_done": "¡Genial, hecho! ✓",
 
     "todo_title": "Tareas", "todo_intro": "Toca una tarea para ver paso a paso cómo hacerla.", "n_done": "{n} de {total} hechas",
     "how_arrange": "Cómo hacerlo ›", "done_aria": "Hecho",
-    "pay_ok": "✅ Todo parece correcto. ¿Aún tienes dudas? Contacta con DutchDoor.", "pay_warn": "⚠️ No pagues hasta haberlo comprobado todo.",
+    "pay_ok": "✅ Todo parece correcto. ¿Aún tienes dudas? Contacta con Haven.", "pay_warn": "⚠️ No pagues hasta haberlo comprobado todo.",
 
     "scam_title": "Detector de estafas", "scam_q_title": "¿Es real este anuncio?", "checking": "Comprobando: {x}.",
     "scam_intro": "Responde a cada pregunta con sinceridad. Solo tardas 1 minuto.",
@@ -79,25 +79,25 @@
     "r_rent_t": "¿Pagas un alquiler demasiado alto?", "r_rent": "En muchas habitaciones, el alquiler máximo depende de un sistema de puntos (tamaño, cocina, baño). Compruébalo gratis.",
     "r_rent_btn": "Comprobador de alquiler de la Huurcommissie ↗",
     "r_dep_t": "Fianza", "r_dep": "Existe un máximo legal y el casero debe devolverte la fianza poco después de que te vayas. Consulta las normas actuales en rijksoverheid.nl.",
-    "r_prob_t": "¿Problemas con tu casero?", "r_prob": "Habla primero con tu casero y pon todo por escrito. ¿No funciona? Contacta con DutchDoor o con la línea de ayuda de vivienda de LSVb.",
+    "r_prob_t": "¿Problemas con tu casero?", "r_prob": "Habla primero con tu casero y pon todo por escrito. ¿No funciona? Contacta con Haven o con la línea de ayuda de vivienda de LSVb.",
 
     "help_title": "Ayuda", "h_check_ad": "Comprobar un anuncio", "h_monthly": "Gastos mensuales", "h_rights": "Tus derechos", "h_rights_sub": "Contrato y alquiler",
     "h_steps": "Paso a paso", "h_steps_sub": "Cómo encontrar habitación",
     "emergency": "Emergencias", "em_112": "📞 112 Emergencias", "em_police": "Policía 0900 8844", "em_fraud": "Fraudehelpdesk",
-    "questions": "Preguntas", "ask_dd": "Pregunta a DutchDoor", "ask_text": "¿Tienes dudas sobre una habitación o un contrato? Envíanos un mensaje.",
+    "questions": "Preguntas", "ask_dd": "Pregunta a Haven", "ask_text": "¿Tienes dudas sobre una habitación o un contrato? Envíanos un mensaje.",
     "your_q": "Tu pregunta", "send": "Enviar",
-    "disclaimer": "DutchDoor es un proyecto escolar (Koning Willem I College). Consulta siempre las normas en las webs oficiales del Gobierno.",
+    "disclaimer": "Haven es un proyecto escolar (Koning Willem I College). Consulta siempre las normas en las webs oficiales del Gobierno.",
     "sent_toast": "¡Gracias! (Proyecto escolar: el mensaje no se envía de verdad)",
 
     "steps_title": "Paso a paso", "start_searching": "Empezar a buscar",
 
-    "welcome_title": "Bienvenido/a a DutchDoor",
+    "welcome_title": "Bienvenido/a a Haven",
     "welcome_text": "Tu puerta a la vida de estudiante en los Países Bajos. Encuentra una habitación segura, instálate y conoce a otros estudiantes.",
     "w_li1": "🔎 Busca alojamiento en 15 ciudades universitarias", "w_li2": "🛡️ Comprueba si un anuncio de habitación es una estafa", "w_li3": "👋 Conoce a estudiantes que van a tu ciudad o a tu centro",
     "create_student_account": "Crear cuenta de estudiante", "have_account": "Ya tengo una cuenta", "continue_guest": "Continuar sin cuenta ›",
 
     "signup_title": "Crear cuenta", "your_account": "Tu cuenta", "email": "Correo electrónico", "password_min": "Contraseña (mín. 6 caracteres)",
-    "about_you_h": "Sobre ti", "agree": "Acepto que mi perfil sea visible para otros estudiantes de DutchDoor",
+    "about_you_h": "Sobre ti", "agree": "Acepto que mi perfil sea visible para otros estudiantes de Haven",
     "email_exists": "Ya existe una cuenta con este correo. Inicia sesión.",
     "demo_stored": "Demo: tu cuenta solo se guarda en este móvil.", "welcome_toast": "¡Bienvenido/a, {name}!",
 
@@ -109,7 +109,7 @@
     "about": "Sobre ti", "ph_about": "¿Qué tipo de casa o de compañeros de piso buscas?",
     "still_looking": "Todavía busco habitación", "show_profile": "Mostrar mi perfil en la comunidad",
 
-    "my_profile": "Mi perfil", "student_badge": "✓ Estudiante", "card_label": "Carné de estudiante DutchDoor", "student": "Estudiante",
+    "my_profile": "Mi perfil", "student_badge": "✓ Estudiante", "card_label": "Carné de estudiante Haven", "student": "Estudiante",
     "city": "Ciudad", "student_no": "N.º de estudiante", "from": "De", "my_details": "Mis datos", "save_changes": "Guardar cambios",
     "settings": "Ajustes", "help_em": "Ayuda y números de emergencia", "my_todo": "Mis listas de tareas", "log_out": "Cerrar sesión",
     "delete_account": "Eliminar cuenta", "member_since": "Miembro desde {date} · Demo: los datos se quedan en este móvil.",
@@ -128,7 +128,7 @@
     "lbl_school": "Centro:", "lbl_study": "Estudios:", "lbl_city": "Ciudad:", "lbl_starts": "Empieza:", "lbl_housing": "Alojamiento:",
     "still_looking_room": "Todavía busca habitación", "create_to_msg": "💬 Crea una cuenta para enviar un mensaje",
     "send_msg": "💬 Enviar un mensaje",
-    "safety": "Nunca envíes dinero ni tu pasaporte a alguien que hayas conocido por internet. Informa a DutchDoor de los mensajes sospechosos.",
+    "safety": "Nunca envíes dinero ni tu pasaporte a alguien que hayas conocido por internet. Informa a Haven de los mensajes sospechosos.",
 
     "say_hi": "¡Saluda a {name}! 👋", "write_msg": "Escribe un mensaje…", "auto_replies": "Demo: las respuestas son automáticas."
   },
@@ -208,7 +208,7 @@
       "bring": ["Pasaporte / DNI", "Contrato de alquiler o permiso del casero", "Partida de nacimiento (si te la piden)"], "cost": "Gratis", "time": "5 minutos por internet", "links": ["Empadronamiento en el BRP (government.nl)"], "tip": "Algunas ciudades tienen una ventanilla especial para internacionales con atención en inglés.", "go": ""},
     "first-0": {"why": "Todas las personas que se quedan más de 4 meses deben empadronarse en el ayuntamiento. Así consigues el BSN.",
       "steps": ["Ve a tu cita en el ayuntamiento (gemeente).", "Enseña tus documentos y rellena el formulario.", "A menudo recibes el BSN en la ventanilla o por correo en unos días."],
-      "bring": ["Pasaporte / DNI", "Contrato de alquiler o permiso firmado de tu casero", "Partida de nacimiento (si te la piden)", "Permiso de residencia (fuera de la UE)"], "cost": "Gratis", "time": "Cita: 15–30 min", "links": ["Empadronamiento en el BRP (government.nl)"], "tip": "¿Tu casero no te deja empadronarte? Es una señal de alarma. Pide ayuda a DutchDoor.", "go": ""},
+      "bring": ["Pasaporte / DNI", "Contrato de alquiler o permiso firmado de tu casero", "Partida de nacimiento (si te la piden)", "Permiso de residencia (fuera de la UE)"], "cost": "Gratis", "time": "Cita: 15–30 min", "links": ["Empadronamiento en el BRP (government.nl)"], "tip": "¿Tu casero no te deja empadronarte? Es una señal de alarma. Pide ayuda a Haven.", "go": ""},
     "first-1": {"why": "El BSN (número de servicio al ciudadano) es tu número personal para la administración, el banco, el trabajo, el médico y los seguros.",
       "steps": ["Recibes el BSN cuando te empadronas en el ayuntamiento.", "Apúntalo y guarda la carta en un lugar seguro.", "Da tu BSN solo a organizaciones oficiales (empresa, banco, aseguradora, administración)."],
       "bring": [], "cost": "Gratis", "time": "Normalmente en una semana tras empadronarte", "links": ["¿Qué es el BSN? (government.nl)"], "tip": "Nunca envíes una foto de tu BSN o de tu pasaporte a un casero que no conoces en persona.", "go": ""},
@@ -246,7 +246,7 @@
       "steps": ["Entra en kvk.nl y busca el nombre de la agencia.", "Comprueba que la dirección y el número de la KvK coinciden con su web y con el contrato.", "¿No está inscrita? No pagues."],
       "bring": [], "cost": "Gratis", "time": "5 minutos", "links": ["Buscador de la KvK"], "tip": "Una agencia no puede cobrarte comisión si también trabaja para el casero.", "go": ""},
     "pay-5": {"why": "Un contrato por escrito te protege. Sin él es difícil demostrar nada.",
-      "steps": ["Pide el contrato antes de pagar nada.", "Comprueba: fecha de inicio, duración, alquiler, gastos de servicio, fianza y plazo de preaviso.", "¿Hay algo que no entiendes? Pide a DutchDoor o a tu centro que lo revise."],
+      "steps": ["Pide el contrato antes de pagar nada.", "Comprueba: fecha de inicio, duración, alquiler, gastos de servicio, fianza y plazo de preaviso.", "¿Hay algo que no entiendes? Pide a Haven o a tu centro que lo revise."],
       "bring": [], "cost": "Gratis", "time": "", "links": ["Comprueba tu alquiler (Huurcommissie)"], "tip": "Paga la fianza por transferencia bancaria, nunca en efectivo.", "go": "Tus derechos"},
     "pay-6": {"why": "Sin empadronarte en el ayuntamiento no consigues el BSN. Sin él no puedes trabajar, abrir una cuenta bancaria ni contratar un seguro.",
       "steps": ["Pregunta al casero por escrito: «¿Puedo empadronarme en esta dirección?»", "Asegúrate de que también figure en tu contrato.", "¿La respuesta es no? Busca otra habitación."],
