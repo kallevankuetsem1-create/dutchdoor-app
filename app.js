@@ -444,7 +444,7 @@ function readProfile(fd, u) {
 views.welcome = function () {
   return {title:'Haven', back:'home', html:
     '<div class="card"><h3 style="margin-bottom:0">🌐 ' + t('language') + '</h3>' + langPicker() + '</div>' +
-    '<div class="card hero" style="text-align:center;padding:28px 18px"><img src="icons/icon.svg" width="72" height="72" alt=""><h2 style="margin-top:12px">' + t('welcome_title') + '</h2><p>' + t('welcome_text') + '</p></div>' +
+    '<div class="card hero" style="text-align:center;padding:28px 18px"><img src="icons/logo.png" alt="Haven" style="width:180px;max-width:70%;height:auto;border-radius:12px"><h2 style="margin-top:12px">' + t('welcome_title') + '</h2><p>' + t('welcome_text') + '</p></div>' +
     '<div class="card"><ul class="list"><li>' + t('w_li1') + '</li><li>' + t('w_li2') + '</li><li>' + t('w_li3') + '</li></ul></div>' +
     '<button class="btn block" onclick="location.hash=\'signup\'">' + t('create_student_account') + '</button>' +
     '<button class="btn ghost block" style="margin-top:10px" onclick="location.hash=\'login\'">' + t('have_account') + '</button>' +
