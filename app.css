@@ -82,3 +82,49 @@ details p{margin-top:8px}
 a{color:var(--blue)}
 .step{display:flex;gap:12px}
 .step b.n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:.9rem}
+/* ---- Haven: rooms ---- */
+.typecard{display:flex;gap:12px;align-items:center;cursor:pointer}
+.typecard .ic{flex:none;width:52px;height:52px;border-radius:12px;background:var(--light);display:grid;place-items:center;font-size:1.6rem}
+.typecard .grow{flex:1;min-width:0}
+.lux{color:#C9A227;letter-spacing:1px;font-size:.85rem}
+.roomgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.rtile{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 4px;text-align:center;font:inherit;color:var(--text);cursor:pointer}
+.rtile b{display:block;font-size:.95rem;color:var(--navy)}
+.rtile small{font-size:.68rem;color:var(--muted)}
+.rtile.mine{border:2px solid var(--ok)}
+.rtile.req{border:2px solid var(--amber)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:0}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:700;text-align:right}
+.kv .total{border-top:1px solid var(--line);padding-top:6px}
+table.tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.tbl th,.tbl td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+.tbl td.n,.tbl th.n{text-align:right;white-space:nowrap}
+/* ---- Haven: pass ---- */
+.pass{background:linear-gradient(140deg,#021839 0%,#0b2d5c 60%,#1F6FB2 100%);color:#fff;border-radius:20px;padding:20px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(2,24,57,.35);margin-bottom:14px}
+.pass:after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+.pass .top{display:flex;justify-content:space-between;align-items:center}
+.pass .top img{height:34px}
+.pass .nfc{font-size:1.4rem;opacity:.85}
+.pass h3{color:#fff;font-size:1.3rem;margin:14px 0 2px}
+.pass .lbl{font-size:.7rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em}
+.pass .val{font-weight:700}
+.pass .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px}
+.qrbox{background:#fff;border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px}
+.qrbox svg,.qrbox img{width:200px;height:200px}
+.qrbox small{color:#5d6b7a}
+.doorbtn{position:relative}
+.waves{display:flex;justify-content:center;margin:12px 0}
+.waves span{width:90px;height:90px;border-radius:50%;border:3px solid var(--blue);display:grid;place-items:center;font-size:2rem;animation:pulse 1s ease-out infinite}
+.waves.ok span{border-color:var(--ok);animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,111,178,.5)}100%{box-shadow:0 0 0 26px rgba(31,111,178,0)}}
+/* ---- Haven: construction ---- */
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{position:relative;padding:0 0 16px 26px}
+.timeline li:before{content:"";position:absolute;left:7px;top:6px;bottom:-6px;width:2px;background:var(--line)}
+.timeline li:last-child:before{display:none}
+.timeline li i{position:absolute;left:0;top:2px;width:16px;height:16px;border-radius:50%;background:var(--line);border:3px solid var(--card)}
+.timeline li.done i{background:var(--ok)}
+.timeline li.now i{background:var(--blue);box-shadow:0 0 0 4px rgba(31,111,178,.25)}
+.news .date{font-size:.8rem;color:var(--muted)}
+.dot{display:inline-block;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--warn);color:#fff;font-size:.7rem;font-weight:700;line-height:18px;text-align:center;vertical-align:middle}
+.thumb{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}

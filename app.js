@@ -1,5 +1,6 @@
-/* Haven app — works offline, data is stored on the phone (localStorage).
-   All texts live in lang/<code>.json. English (en.json) is the base and the fallback. */
+/* Haven app — student residence Haven. Works offline, data is stored on the phone (localStorage).
+   All texts live in lang/<code>.json. English (en.json) is the base and the fallback.
+   Room types, prices and the building layout are in HAVEN below: change them there. */
 (function () {
 'use strict';
 
@@ -28,7 +29,6 @@ function setLang(code) {
     L = data; LANG = code; store.set('lang', code); document.documentElement.lang = code;
   }).catch(function () { L = EN; LANG = 'en'; document.documentElement.lang = 'en'; });
 }
-// t('key', {name:'x'}) -> translated UI text with {placeholders} filled in
 function t(key, vars) {
   var s = (L && L.ui[key] != null) ? L.ui[key] : (EN.ui[key] != null ? EN.ui[key] : key);
   if (vars) Object.keys(vars).forEach(function (k) { s = s.split('{' + k + '}').join(vars[k]); });
@@ -45,292 +45,332 @@ function bindLangPicker() {
     b.onclick = function () { if (b.dataset.lang === LANG) return; setLang(b.dataset.lang).then(function () { toast(t('language_saved')); render(); }); };
   });
 }
+function fmtDate(d, opts) { try { return d.toLocaleDateString(LANG, opts); } catch (e) { return d.toDateString(); } }
+function longDate(d) { return fmtDate(d, {day:'numeric', month:'long', year:'numeric'}); }
+function monthYear(d) { return fmtDate(d, {month:'long', year:'numeric'}); }
 
-/* ---------- data (language independent) ---------- */
-// Indicative rents (euro per month) for a room in a shared student house / a studio. Always check current prices.
-var CITIES = [
-  {id:'amsterdam',name:'Amsterdam',room:1000,studio:1450,schools:'UvA, VU, HvA',pressure:3,providers:['DUWO','Student Experience','Xior','ROOM.nl']},
-  {id:'rotterdam',name:'Rotterdam',room:720,studio:1100,schools:'Erasmus, Hogeschool Rotterdam',pressure:2,providers:['SSH','Xior','Stadswonen']},
-  {id:'utrecht',name:'Utrecht',room:780,studio:1200,schools:'UU, HU',pressure:3,providers:['SSH','ROOM.nl','Xior']},
-  {id:'den-haag',name:'Den Haag',room:700,studio:1100,schools:'Haagse Hogeschool, Leiden University (campus Den Haag)',pressure:2,providers:['DUWO','Xior','The Social Hub']},
-  {id:'leiden',name:'Leiden',room:700,studio:1050,schools:'Leiden University',pressure:3,providers:['DUWO','Xior']},
-  {id:'delft',name:'Delft',room:650,studio:1000,schools:'TU Delft',pressure:3,providers:['DUWO','Xior']},
-  {id:'groningen',name:'Groningen',room:520,studio:850,schools:'RUG, Hanze',pressure:2,providers:['SSH','Lefier','Xior']},
-  {id:'eindhoven',name:'Eindhoven',room:630,studio:950,schools:'TU/e, Fontys',pressure:2,providers:['Vestide','Xior','Woonbedrijf']},
-  {id:'tilburg',name:'Tilburg',room:560,studio:900,schools:'Tilburg University, Fontys, Avans',pressure:2,providers:['Tiwos','Xior','Kamernet']},
-  {id:'den-bosch',name:"'s-Hertogenbosch",room:620,studio:950,schools:'Avans, Koning Willem I College, JADS',pressure:2,providers:['Zayaz','Kamernet','Pararius']},
-  {id:'nijmegen',name:'Nijmegen',room:510,studio:850,schools:'Radboud, HAN',pressure:2,providers:['SSH','Talis','Kamernet']},
-  {id:'maastricht',name:'Maastricht',room:600,studio:900,schools:'Maastricht University, Zuyd',pressure:2,providers:['Maastricht Housing','Xior','The Student Hotel']},
-  {id:'enschede',name:'Enschede',room:450,studio:750,schools:'University of Twente, Saxion',pressure:1,providers:['Roombeek','Kamernet','UT campus housing']},
-  {id:'arnhem',name:'Arnhem',room:520,studio:850,schools:'HAN, ArtEZ',pressure:1,providers:['SSH','Kamernet','Pararius']},
-  {id:'breda',name:'Breda',room:580,studio:900,schools:'BUas, Avans',pressure:2,providers:['Xior','Kamernet','Pararius']}
-];
-function cityName(c) { return (D('city_names') || {})[c.id] || c.name; }
-
-function platforms(c) {
-  var n = encodeURIComponent(c.name.replace("'s-", 's-'));
-  return [
-    {name:'Kamernet', what:t('plat_kamernet'), url:'https://kamernet.nl/en/for-rent/rooms-' + c.id},
-    {name:'Pararius', what:t('plat_pararius'), url:'https://www.pararius.com/apartments/' + c.id},
-    {name:'HousingAnywhere', what:t('plat_ha'), url:'https://housinganywhere.com/s/' + n + '--Netherlands'},
-    {name:'Funda Huur', what:t('plat_funda'), url:'https://www.funda.nl/zoeken/huur?selected_area=%5B%22' + c.id + '%22%5D'}
-  ];
-}
-
-var LIST_KEYS = ['before', 'first', 'pay'];
-// Link URLs and in-app targets for the guides. The link labels are in the language files (same order).
-var GUIDE_META = {
-  'before-1': {links:['https://www.government.nl/topics/legalisation-of-documents']},
-  'before-2': {links:['https://www.studielink.nl']},
-  'before-3': {links:['https://ind.nl/en/residence-permits/study']},
-  'before-4': {go:'search'},
-  'before-5': {links:['https://duo.nl/particulier/international-student/'], go:'budget'},
-  'before-6': {links:['https://www.government.nl/topics/health-insurance']},
-  'before-7': {links:['https://www.government.nl/topics/personal-data/registering-in-the-brp']},
-  'first-0': {links:['https://www.government.nl/topics/personal-data/registering-in-the-brp']},
-  'first-1': {links:['https://www.government.nl/topics/personal-data/citizen-service-number-bsn']},
-  'first-3': {links:['https://www.digid.nl/en']},
-  'first-4': {links:['https://www.government.nl/topics/health-insurance','https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/healthcare-allowance']},
-  'first-6': {links:['https://www.ov-chipkaart.nl/en','https://www.ns.nl/en']},
-  'first-7': {links:['https://swapfiets.nl/en']},
-  'pay-1': {links:['https://lens.google.com','https://tineye.com']},
-  'pay-2': {links:['https://maps.google.com']},
-  'pay-3': {links:['https://www.kadaster.nl/']},
-  'pay-4': {links:['https://www.kvk.nl/en/search/']},
-  'pay-5': {links:['https://www.huurcommissie.nl/huurcommissie-helpt/huurprijscheck-en-puntentelling'], go:'rights'}
+/* ---------- Haven: building data (example, change here) ---------- */
+var HAVEN = {
+  ready: new Date(2027, 7, 1),       // completion (August 2027)
+  moveIn: new Date(2027, 8, 1),      // contracts start 1 September 2027
+  // id, size m², basic rent, service costs, luxury 1-5, icon, self-contained (huurtoeslag possible), persons
+  types: [
+    {id:'basic',   m2:14, rent:475,  service:60, lux:1, icon:'🛏️', own:false, persons:1},
+    {id:'comfort', m2:18, rent:560,  service:60, lux:2, icon:'🚿', own:false, persons:1},
+    {id:'studio',  m2:24, rent:725,  service:65, lux:3, icon:'🏠', own:true,  persons:1},
+    {id:'plus',    m2:28, rent:810,  service:65, lux:4, icon:'🌇', own:true,  persons:1},
+    {id:'loft',    m2:36, rent:945,  service:70, lux:5, icon:'✨', own:true,  persons:1},
+    {id:'duo',     m2:48, rent:1150, service:95, lux:4, icon:'👥', own:true,  persons:2}
+  ],
+  // rooms per floor and type: 8 + 15 + 15 + 15 + 17 = 70
+  floors: [
+    {basic:4, comfort:2, studio:2},
+    {basic:4, comfort:4, studio:3, plus:2, loft:1, duo:1},
+    {basic:4, comfort:4, studio:3, plus:2, loft:1, duo:1},
+    {basic:4, comfort:4, studio:3, plus:2, loft:1, duo:1},
+    {basic:4, comfort:2, studio:3, plus:4, loft:3, duo:1}
+  ],
+  // construction phases: progress per phase (0-100), same order as "phases" in the language files
+  phases: [100, 100, 70, 0, 0, 0],
+  // dates of the news items, same order as "news" in the language files (newest first)
+  news: ['2026-11-14', '2026-10-28', '2026-10-03', '2026-06-01', '2026-03-02']
 };
-var SCAM_W = [3, 4, 4, 2, 5, 2, 3, 3];
-// Stored room status values (English keys, kept for saved data). Shown translated.
-var STATUS_KEYS = ['Interested','Viewing planned','Applied','Offer','Signed','Rejected'];
-function statusLabel(s) { var i = STATUS_KEYS.indexOf(s); return i > -1 ? D('status')[i] : s; }
+var TYPE_ORDER = HAVEN.types.map(function (x) { return x.id; });
+function type(id) { return HAVEN.types.filter(function (x) { return x.id === id; })[0]; }
+function typeText(id) { return D('types')[id]; }
+function total(tp) { return tp.rent + tp.service; }
+var ROOMS = (function () {
+  var list = [];
+  HAVEN.floors.forEach(function (f, fl) {
+    var n = 1;
+    TYPE_ORDER.forEach(function (tid) {
+      for (var i = 0; i < (f[tid] || 0); i++) { list.push({id:fl + '.' + (n < 10 ? '0' : '') + n, floor:fl, type:tid}); n++; }
+    });
+  });
+  return list;
+})();
+function room(id) { return ROOMS.filter(function (r) { return r.id === id; })[0]; }
+function floorName(fl) { return fl === 0 ? t('floor_0') : t('floor_n', {n:fl}); }
+function buildProgress() { var p = HAVEN.phases; return Math.round(p.reduce(function (a, b) { return a + b; }, 0) / p.length); }
+function currentPhase() { for (var i = 0; i < HAVEN.phases.length; i++) if (HAVEN.phases[i] < 100) return i; return -1; }
+function luxStars(n) { return '<span class="lux">' + '★★★★★'.slice(0, n) + '<span style="opacity:.25">' + '★★★★★'.slice(n) + '</span></span>'; }
 
 /* ---------- helpers ---------- */
 var $view = document.getElementById('view');
 var $title = document.getElementById('title');
 var $back = document.getElementById('back');
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function eur(n) { n = Math.round(n); return (n < 0 ? '-€' : '€') + Math.abs(n).toLocaleString('nl-NL'); }
-function city(id) { return CITIES.filter(function (c) { return c.id === id; })[0]; }
-function toast(s) { var e = document.getElementById('toast'); e.textContent = s; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(function () { e.classList.remove('show'); }, 2200); }
-function go(h) { location.hash = h; }
-function list(key) { return D('checklists')[key]; }
-function checklistProgress(key) { var st = store.get('cl_' + key, {}), items = list(key).items, n = items.filter(function (_, i) { return st[i]; }).length; return [n, items.length]; }
-function bar(n, tot) { return '<div class="bar"><i style="width:' + (tot ? n / tot * 100 : 0) + '%"></i></div>'; }
-function fit(price, budget) {
-  if (price <= budget) return '<span class="tag ok">' + t('fit_ok') + '</span>';
-  if (price <= budget * 1.15) return '<span class="tag mid">' + t('fit_mid') + '</span>';
-  return '<span class="tag bad">' + t('fit_bad') + '</span>';
+function eur(n) {
+  var neg = n < 0; n = Math.abs(n);
+  var whole = Math.floor(n), cents = Math.round((n - whole) * 100);
+  var s = String(whole).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (cents ? ',' + (cents < 10 ? '0' : '') + cents : '');
+  return (neg ? '-€' : '€') + s;
 }
+function toast(s) { var e = document.getElementById('toast'); e.textContent = s; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(function () { e.classList.remove('show'); }, 2400); }
+function go(h) { location.hash = h; }
 function firstName(n) { return esc(String(n || '').split(' ')[0]); }
+function applications() { var u = me(); return u ? (u.apps || []) : []; }
+function unreadNews() { var seen = new Date(store.get('news_seen', 0)); return HAVEN.news.filter(function (d) { return new Date(d) > seen; }).length; }
+var timers = [];
+function clearTimers() { timers.forEach(function (x) { clearInterval(x); clearTimeout(x); }); timers = []; }
 
 /* ---------- views ---------- */
 var views = {};
 
 views.home = function () {
-  var prefs = store.get('prefs', {city:'', budget:650, type:'room'});
-  var rooms = store.get('rooms', []);
-  var a = checklistProgress('before'), b = checklistProgress('first');
-  var c = city(prefs.city), u = me(), vw = viewer();
+  var u = me(), mine = u && u.room ? room(u.room) : null, apps = applications(), unread = unreadNews(), cur = currentPhase();
   return {title:'Haven', html:
-    '<div class="card hero"><h2>' + (u ? t('home_hi', {name:firstName(u.name)}) : t('home_welcome')) + '</h2><p>' + t('home_intro') + '</p>' +
-    '<button class="btn" style="background:#fff;color:#1F3A5F" onclick="location.hash=\'search\'">' + t('find_room') + '</button></div>' +
-    (c ? '<div class="card city" onclick="location.hash=\'city/' + c.id + '\'"><div><h3>' + t('your_city', {city:esc(cityName(c))}) + '</h3><span class="muted">' + t('room_about', {price:eur(c.room)}) + '</span></div><span class="price">›</span></div>' : '') +
+    '<div class="card hero"><h2>' + (u ? t('home_hi', {name:firstName(u.name)}) : t('home_welcome')) + '</h2><p>' + t('home_intro', {date:monthYear(HAVEN.ready)}) + '</p>' +
+    '<button class="btn" style="background:#fff;color:#021839" onclick="location.hash=\'rooms\'">' + t('view_rooms') + '</button></div>' +
+    (mine ? '<div class="card city" onclick="location.hash=\'room/' + mine.id + '\'"><div><h3>🔑 ' + t('my_room') + ': ' + mine.id + '</h3><span class="muted">' + esc(typeText(mine.type).name) + ' · ' + floorName(mine.floor) + '</span></div><span class="price">›</span></div>' : '') +
+    (apps.length && !mine ? '<div class="card"><h3>' + t('my_applications') + '</h3>' + apps.map(function (id) { var r = room(id); return r ? '<a class="city" style="text-decoration:none;color:inherit;padding:6px 0" href="#room/' + id + '"><span>' + t('room_n', {n:id}) + ' · ' + esc(typeText(r.type).name) + '</span><span>›</span></a>' : ''; }).join('') + '</div>' : '') +
+    '<div class="card city" onclick="location.hash=\'updates\'"><div style="flex:1"><h3>🏗️ ' + t('build_title') + ' ' + (unread ? '<span class="dot">' + t('new_updates', {n:unread}) + '</span>' : '') + '</h3>' +
+      '<span class="muted">' + t('build_progress', {n:buildProgress()}) + (cur > -1 ? ' · ' + t('build_next', {x:esc(D('phases')[cur][0])}) : '') + '</span>' +
+      '<div class="bar"><i style="width:' + buildProgress() + '%"></i></div></div><span class="price">›</span></div>' +
     '<div class="grid2">' +
-      '<button class="tile" onclick="location.hash=\'scam\'"><span class="ic">🛡️</span><b>' + t('tile_scam') + '</b><span>' + t('tile_scam_sub') + '</span></button>' +
-      '<button class="tile" onclick="location.hash=\'budget\'"><span class="ic">💶</span><b>' + t('tile_budget') + '</b><span>' + t('tile_budget_sub') + '</span></button>' +
-      '<button class="tile" onclick="location.hash=\'community\'"><span class="ic">👋</span><b>' + t('tile_students') + '</b><span>' +
-        (vw.city ? t('students_in_city', {n:others().filter(function (x) { return x.city === vw.city; }).length}) : t('students_total', {n:others().length})) + '</span></button>' +
+      '<button class="tile" onclick="location.hash=\'rooms\'"><span class="ic">🏠</span><b>' + t('tile_rooms') + '</b><span>' + t('tile_rooms_sub') + '</span></button>' +
+      '<button class="tile" onclick="location.hash=\'pass\'"><span class="ic">🔑</span><b>' + t('tile_pass') + '</b><span>' + t('tile_pass_sub') + '</span></button>' +
+      '<button class="tile" onclick="location.hash=\'report\'"><span class="ic">🛠️</span><b>' + t('tile_report') + '</b><span>' + t('tile_report_sub') + '</span></button>' +
       '<button class="tile" onclick="location.hash=\'help\'"><span class="ic">🆘</span><b>' + t('tile_help') + '</b><span>' + t('tile_help_sub') + '</span></button>' +
     '</div>' +
-    (rooms.length ? '<div class="card city" onclick="location.hash=\'tracker\'"><div><h3>📌 ' + t('saved_rooms') + '</h3><span class="muted">' + t('n_saved', {n:rooms.length}) + '</span></div><span class="price">›</span></div>' : '') +
-    (u ? '' : '<div class="card"><h3>' + t('meet_title') + '</h3><p class="muted">' + t('meet_text') + '</p><div class="row"><button class="btn sm" onclick="location.hash=\'signup\'">' + t('create_account') + '</button><button class="btn ghost sm" onclick="location.hash=\'login\'">' + t('log_in') + '</button></div></div>') +
-    '<div class="card"><h3>' + t('progress') + '</h3>' +
-      '<p class="muted" style="margin:6px 0 0">' + t('progress_before', {n:a[0], total:a[1]}) + '</p>' + bar(a[0], a[1]) +
-      '<p class="muted" style="margin:6px 0 0">' + t('progress_first', {n:b[0], total:b[1]}) + '</p>' + bar(b[0], b[1]) +
-      '<button class="btn ghost sm" style="margin-top:8px" onclick="location.hash=\'todo\'">' + t('open_todo') + '</button></div>' +
-    (u ? '' : '<div class="card"><h3>🌐 ' + t('language') + '</h3>' + langPicker() + '</div>'),
+    (u ? '' : '<div class="card"><h3>' + t('meet_title') + '</h3><p class="muted">' + t('meet_text') + '</p><div class="row"><button class="btn sm" onclick="location.hash=\'signup\'">' + t('create_account') + '</button><button class="btn ghost sm" onclick="location.hash=\'login\'">' + t('log_in') + '</button></div></div>' +
+      '<div class="card"><h3>🌐 ' + t('language') + '</h3>' + langPicker() + '</div>'),
     bind: bindLangPicker
   };
 };
 
-views.search = function () {
-  var p = store.get('prefs', {city:'', budget:650, type:'room'});
-  var q = (store.get('q', '') || '').toLowerCase();
-  var lst = CITIES.filter(function (c) { return !q || (c.name + ' ' + cityName(c) + ' ' + c.schools).toLowerCase().indexOf(q) > -1; });
-  lst.sort(function (x, y) { return x[p.type] - y[p.type]; });
-  return {title:t('search_title'), tab:'search', html:
-    '<div class="card"><label class="f" for="q" style="margin-top:0">' + t('city_or_school') + '</label><input id="q" type="search" placeholder="' + esc(t('search_ph')) + '" value="' + esc(store.get('q', '')) + '">' +
-    '<label class="f">' + t('looking_for') + '</label><div class="chips">' +
-      '<button class="chip' + (p.type === 'room' ? ' on' : '') + '" data-type="room">' + t('type_room') + '</button>' +
-      '<button class="chip' + (p.type === 'studio' ? ' on' : '') + '" data-type="studio">' + t('type_studio') + '</button></div>' +
-    '<label class="f" for="budget">' + t('max_rent') + ' <span id="bv">' + eur(p.budget) + '</span></label>' +
-    '<input id="budget" type="range" min="300" max="1600" step="25" value="' + p.budget + '"></div>' +
-    '<p class="muted">' + t('n_cities', {n:lst.length}) + '</p>' +
-    (lst.length ? lst.map(function (c) {
-      return '<div class="card city" onclick="location.hash=\'city/' + c.id + '\'"><div><h3>' + esc(cityName(c)) + '</h3>' +
-        '<div class="muted">' + esc(c.schools) + '</div><div style="margin-top:6px">' + fit(c[p.type], p.budget) + ' <span class="tag">' + D('pressure_tag')[c.pressure] + '</span></div></div>' +
-        '<div class="price">' + eur(c[p.type]) + '</div></div>';
-    }).join('') : '<div class="empty">' + t('no_city') + '</div>'),
+/* ----- rooms ----- */
+function roomsOf(tid) { return ROOMS.filter(function (r) { return r.type === tid; }); }
+views.rooms = function () {
+  return {title:t('rooms_title'), tab:'rooms', html:
+    '<p class="muted">' + t('rooms_intro') + '</p>' +
+    '<div class="card"><h3>' + t('overview') + '</h3><table class="tbl"><tr><th>' + t('th_type') + '</th><th class="n">' + t('th_size') + '</th><th class="n">' + t('th_rent') + '</th><th class="n">' + t('th_count') + '</th></tr>' +
+      HAVEN.types.map(function (tp) { return '<tr><td>' + tp.icon + ' ' + esc(typeText(tp.id).name) + '</td><td class="n">' + tp.m2 + '</td><td class="n">' + eur(total(tp)) + '</td><td class="n">' + roomsOf(tp.id).length + '</td></tr>'; }).join('') +
+      '<tr><td><b>' + t('filter_all') + '</b></td><td></td><td></td><td class="n"><b>' + ROOMS.length + '</b></td></tr>' +
+      '</table><button class="btn ghost sm block" style="margin-top:10px" onclick="location.hash=\'allrooms\'">' + t('see_all') + '</button></div>' +
+    HAVEN.types.map(function (tp) {
+      var tx = typeText(tp.id);
+      return '<div class="card typecard" onclick="location.hash=\'type/' + tp.id + '\'"><div class="ic">' + tp.icon + '</div><div class="grow"><h3>' + esc(tx.name) + '</h3>' +
+        '<div class="muted">' + tp.m2 + ' m² · ' + luxStars(tp.lux) + '</div><span class="tag ok">' + t('n_available', {n:roomsOf(tp.id).length}) + '</span></div>' +
+        '<div style="text-align:right"><div class="price">' + eur(total(tp)) + '</div><small class="muted">' + t('per_month') + '</small></div></div>';
+    }).join('')
+  };
+};
+
+function priceBlock(tp) {
+  return '<dl class="kv"><dt>' + t('basic_rent') + '</dt><dd>' + eur(tp.rent) + '</dd><dt>' + t('service_costs') + '</dt><dd>' + eur(tp.service) + '</dd>' +
+    '<dt class="total">' + t('total_rent') + '</dt><dd class="total" style="color:var(--navy)">' + eur(total(tp)) + '</dd>' +
+    '<dt>' + t('deposit') + '</dt><dd>' + eur(tp.rent) + '</dd></dl>' +
+    (tp.persons > 1 ? '<p class="muted" style="margin:8px 0 0">' + t('per_person', {price:eur(total(tp) / tp.persons)}) + '</p>' : '');
+}
+function featureList(tx) { return '<ul class="list">' + tx.features.map(function (f) { return '<li>✓ ' + esc(f) + '</li>'; }).join('') + '</ul>'; }
+function roomTileClass(r) { var u = me(); return u && u.room === r.id ? ' mine' : applications().indexOf(r.id) > -1 ? ' req' : ''; }
+
+views.type = function (tid) {
+  var tp = type(tid); if (!tp) return views.rooms();
+  var tx = typeText(tid), rs = roomsOf(tid);
+  return {title:tx.name, back:'rooms', tab:'rooms', html:
+    '<div class="card" style="text-align:center"><div style="font-size:3rem">' + tp.icon + '</div><h2>' + esc(tx.name) + '</h2><div>' + luxStars(tp.lux) + '</div><p class="muted" style="margin-top:6px">' + esc(tx.desc) + '</p>' +
+      '<span class="tag">' + t('size') + ': ' + tp.m2 + ' m²</span> <span class="tag ok">' + t('n_available', {n:rs.length}) + '</span></div>' +
+    '<div class="card">' + priceBlock(tp) + '</div>' +
+    '<div class="card"><h3>' + t('features') + '</h3>' + featureList(tx) +
+      '<p class="muted" style="margin:8px 0 0">' + (tp.own ? t('allowance_yes') : t('allowance_no')) + '</p></div>' +
+    '<div class="card"><h3>' + t('rooms_of_type') + '</h3><div class="roomgrid">' + rs.map(function (r) {
+      return '<button class="rtile' + roomTileClass(r) + '" onclick="location.hash=\'room/' + r.id + '\'"><b>' + r.id + '</b><small>' + floorName(r.floor) + '</small></button>';
+    }).join('') + '</div></div>'
+  };
+};
+
+views.allrooms = function () {
+  var f = store.get('rf', {type:'all', max:1300});
+  var list = ROOMS.filter(function (r) { return (f.type === 'all' || r.type === f.type) && total(type(r.type)) <= f.max; });
+  return {title:t('all_rooms_title'), back:'rooms', tab:'rooms', html:
+    '<div class="card"><div class="chips" style="margin-top:0"><button class="chip' + (f.type === 'all' ? ' on' : '') + '" data-tf="all">' + t('filter_all') + '</button>' +
+      HAVEN.types.map(function (tp) { return '<button class="chip' + (f.type === tp.id ? ' on' : '') + '" data-tf="' + tp.id + '">' + tp.icon + ' ' + esc(typeText(tp.id).name) + '</button>'; }).join('') + '</div>' +
+      '<label class="f" for="mx">' + t('max_rent') + ' <span id="mxv">' + eur(f.max) + '</span></label><input id="mx" type="range" min="500" max="1300" step="25" value="' + f.max + '"></div>' +
+    '<p class="muted">' + t('n_rooms_shown', {n:list.length}) + '</p>' +
+    (list.length ? HAVEN.floors.map(function (_, fl) {
+      var rs = list.filter(function (r) { return r.floor === fl; });
+      if (!rs.length) return '';
+      return '<div class="card"><h3>' + floorName(fl) + '</h3><div class="roomgrid">' + rs.map(function (r) {
+        var tp = type(r.type);
+        return '<button class="rtile' + roomTileClass(r) + '" onclick="location.hash=\'room/' + r.id + '\'"><b>' + r.id + '</b><small>' + tp.icon + ' ' + eur(total(tp)) + '</small></button>';
+      }).join('') + '</div></div>';
+    }).join('') : '<div class="empty">' + t('no_rooms') + '</div>'),
     bind: function () {
-      var qi = document.getElementById('q');
-      qi.addEventListener('input', function () { store.set('q', qi.value); render(); var n = document.getElementById('q'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); });
-      document.querySelectorAll('[data-type]').forEach(function (b) { b.onclick = function () { p.type = b.dataset.type; store.set('prefs', p); render(); }; });
-      var r = document.getElementById('budget');
-      r.oninput = function () { document.getElementById('bv').textContent = eur(r.value); };
-      r.onchange = function () { p.budget = +r.value; store.set('prefs', p); render(); };
+      document.querySelectorAll('[data-tf]').forEach(function (b) { b.onclick = function () { f.type = b.dataset.tf; store.set('rf', f); render(); }; });
+      var r = document.getElementById('mx');
+      r.oninput = function () { document.getElementById('mxv').textContent = eur(+r.value); };
+      r.onchange = function () { f.max = +r.value; store.set('rf', f); render(); };
     }
   };
 };
 
-views.city = function (id) {
-  var c = city(id); if (!c) return views.search();
-  var p = store.get('prefs', {city:'', budget:650, type:'room'});
-  var mine = p.city === c.id, nm = esc(cityName(c));
-  return {title:cityName(c), back:'search', tab:'search', html:
-    '<div class="card"><div class="row" style="justify-content:space-between"><div><span class="muted">' + t('room_shared') + '</span><div class="big">' + eur(c.room) + '</div></div>' +
-    '<div><span class="muted">' + t('studio') + '</span><div class="big">' + eur(c.studio) + '</div></div></div>' +
-    '<p class="muted" style="margin-top:6px">' + t('indicative') + ' ' + fit(c[p.type], p.budget) + '</p>' +
-    '<p><b>' + t('finding_room') + '</b> ' + D('pressure')[c.pressure] + '</p><p>💡 ' + esc(D('city_tips')[c.id]) + '</p>' +
-    '<button class="btn ' + (mine ? 'ghost' : '') + ' sm" id="setcity">' + (mine ? t('this_my_city') : t('set_my_city')) + '</button></div>' +
-    '<h2>' + t('search_in', {city:nm}) + '</h2><p class="muted">' + t('opens_site', {city:nm}) + '</p>' +
-    platforms(c).map(function (x) {
-      return '<a class="card city" style="text-decoration:none;color:inherit" href="' + x.url + '" target="_blank" rel="noopener"><div><h3>' + x.name + '</h3><span class="muted">' + x.what + '</span></div><span class="price">↗</span></a>';
-    }).join('') +
-    '<div class="card"><h3>' + t('providers_here') + '</h3><ul class="list">' + c.providers.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
-    '<p class="muted">' + t('ask_office', {x:esc(c.schools)}) + '</p></div>' +
-    '<div class="card"><h3>' + t('found_room') + '</h3><p>' + t('found_room_text') + '</p><button class="btn block" onclick="location.hash=\'room/new/' + c.id + '\'">' + t('save_room_btn') + '</button></div>',
-    bind: function () { document.getElementById('setcity').onclick = function () { p.city = mine ? '' : c.id; store.set('prefs', p); toast(mine ? t('city_removed') : t('now_your_city', {city:cityName(c)})); render(); }; }
-  };
-};
-
-views.tracker = function () {
-  var rooms = store.get('rooms', []);
-  return {title:t('saved_title'), tab:'tracker', html:
-    '<button class="btn block" style="margin-bottom:12px" onclick="location.hash=\'room/new\'">' + t('save_room_btn') + '</button>' +
-    (rooms.length ? rooms.map(function (r) {
-      var cls = r.status === 'Rejected' ? 'bad' : (r.status === 'Signed' || r.status === 'Offer') ? 'ok' : '';
-      var rc = r.city ? city(r.city) : null;
-      return '<div class="card city" onclick="location.hash=\'room/' + r.id + '\'"><div><h3>' + esc(r.title || t('room_default')) + '</h3>' +
-        '<div class="muted">' + (rc ? esc(cityName(rc)) : '') + (r.date ? ' · ' + t('viewing_on', {date:esc(r.date)}) : '') + '</div>' +
-        '<div style="margin-top:6px"><span class="tag ' + cls + '">' + esc(statusLabel(r.status)) + '</span>' +
-        (r.scam != null ? ' <span class="tag ' + (r.scam >= 6 ? 'bad' : r.scam >= 3 ? 'mid' : 'ok') + '">' + t('scam_risk', {lvl:t(r.scam >= 6 ? 'risk_high' : r.scam >= 3 ? 'risk_mid' : 'risk_low')}) + '</span>' : '') + '</div></div>' +
-        '<div class="price">' + (r.rent ? eur(r.rent) : '') + '</div></div>';
-    }).join('') : '<div class="empty">📌<br>' + t('no_rooms_1') + '<br>' + t('no_rooms_2') + '</div>')
-  };
-};
-
-views.room = function (id, cityId) {
-  var rooms = store.get('rooms', []);
-  var isNew = id === 'new';
-  var r = isNew ? {id:String(Date.now()), title:'', city:cityId || store.get('prefs', {}).city || '', rent:'', link:'', status:'Interested', date:'', notes:''} : rooms.filter(function (x) { return x.id === id; })[0];
-  if (!r) return views.tracker();
-  return {title:isNew ? t('save_room_title') : t('room_title'), back:'tracker', tab:'tracker', html:
-    '<form class="card" id="rf">' +
-    '<label class="f" style="margin-top:0">' + t('f_name_addr') + '</label><input name="title" required value="' + esc(r.title) + '" placeholder="' + esc(t('ph_room')) + '">' +
-    '<label class="f">' + t('f_city') + '</label><select name="city"><option value="">' + t('choose') + '</option>' + CITIES.map(function (c) { return '<option value="' + c.id + '"' + (c.id === r.city ? ' selected' : '') + '>' + esc(cityName(c)) + '</option>'; }).join('') + '</select>' +
-    '<label class="f">' + t('f_rent') + '</label><input name="rent" type="number" inputmode="numeric" min="0" value="' + esc(r.rent) + '">' +
-    '<label class="f">' + t('f_link') + '</label><input name="link" type="url" value="' + esc(r.link) + '" placeholder="https://">' +
-    '<label class="f">' + t('f_status') + '</label><select name="status">' + STATUS_KEYS.map(function (s) { return '<option value="' + s + '"' + (s === r.status ? ' selected' : '') + '>' + esc(statusLabel(s)) + '</option>'; }).join('') + '</select>' +
-    '<label class="f">' + t('f_date') + '</label><input name="date" type="date" value="' + esc(r.date) + '">' +
-    '<label class="f">' + t('f_notes') + '</label><textarea name="notes" rows="3" placeholder="' + esc(t('ph_notes')) + '">' + esc(r.notes) + '</textarea>' +
-    '<button class="btn block" style="margin-top:14px">' + t('save') + '</button></form>' +
-    (isNew ? '' :
-      '<div class="row">' + (r.link ? '<a class="btn ghost sm" href="' + esc(r.link) + '" target="_blank" rel="noopener">' + t('open_ad') + '</a>' : '') +
-      '<button class="btn ghost sm" onclick="location.hash=\'scam/' + r.id + '\'">🛡️ ' + t('scam_check') + '</button>' +
-      '<button class="btn danger sm" id="del">' + t('delete') + '</button></div>'),
+views.room = function (id) {
+  var r = room(id); if (!r) return views.rooms();
+  var tp = type(r.type), tx = typeText(r.type), u = me(), apps = applications();
+  var isMine = u && u.room === r.id, applied = apps.indexOf(r.id) > -1;
+  return {title:t('room_n', {n:r.id}), back:'type/' + r.type, tab:'rooms', html:
+    '<div class="card"><div class="row" style="justify-content:space-between"><div><h2 style="margin:0">' + t('room_n', {n:r.id}) + '</h2><span class="muted">' + tp.icon + ' ' + esc(tx.name) + ' · ' + floorName(r.floor) + '</span></div>' +
+      '<span class="tag ' + (applied ? 'mid' : 'ok') + '">' + (isMine ? t('status_mine') : applied ? t('status_applied') : t('status_available')) + '</span></div>' +
+      '<p style="margin:10px 0 0">' + luxStars(tp.lux) + ' · ' + tp.m2 + ' m²</p><p class="muted" style="margin:4px 0 0">' + t('move_in', {date:longDate(HAVEN.moveIn)}) + '</p></div>' +
+    '<div class="card">' + priceBlock(tp) + '</div>' +
+    '<div class="card"><h3>' + t('features') + '</h3>' + featureList(tx) + '</div>' +
+    (!u ? '<button class="btn block" onclick="location.hash=\'signup\'">' + t('login_to_apply') + '</button>' :
+      (applied ? '<button class="btn ghost block" id="withdraw">' + t('withdraw') + '</button>' : (isMine ? '' : '<button class="btn block" id="apply">' + t('apply') + '</button>')) +
+      (isMine ? '' : '<button class="btn ghost block" style="margin-top:10px" id="setmine">' + t('set_mine') + '</button><p class="muted" style="margin-top:6px">' + t('set_mine_hint') + '</p>')),
     bind: function () {
-      document.getElementById('rf').onsubmit = function (e) {
-        e.preventDefault();
-        var fd = new FormData(e.target);
-        ['title','city','rent','link','status','date','notes'].forEach(function (k) { r[k] = fd.get(k); });
-        r.rent = r.rent ? +r.rent : '';
-        if (r.link && !/^https?:\/\//i.test(r.link)) r.link = 'https://' + r.link;
-        var lst = store.get('rooms', []).filter(function (x) { return x.id !== r.id; });
-        lst.unshift(r); store.set('rooms', lst);
-        toast(t('room_saved')); go('tracker');
-      };
-      var d = document.getElementById('del');
-      if (d) d.onclick = function () { if (confirm(t('confirm_del_room'))) { store.set('rooms', rooms.filter(function (x) { return x.id !== r.id; })); toast(t('deleted')); go('tracker'); } };
+      var a = document.getElementById('apply'), w = document.getElementById('withdraw'), s = document.getElementById('setmine');
+      if (a) a.onclick = function () { u.apps = (u.apps || []).concat([r.id]); saveMe(u); toast(t('applied_toast')); render(); };
+      if (w) w.onclick = function () { u.apps = (u.apps || []).filter(function (x) { return x !== r.id; }); saveMe(u); toast(t('withdrawn')); render(); };
+      if (s) s.onclick = function () { u.room = r.id; u.apps = (u.apps || []).filter(function (x) { return x !== r.id; }); saveMe(u); toast(t('mine_toast', {n:r.id})); go('pass'); };
     }
   };
 };
 
-views.guide = function (key, i) {
-  var cl = list(key), g = D('guides')[key + '-' + i], meta = GUIDE_META[key + '-' + i] || {};
-  if (!cl || !g) return views.todo();
-  i = +i; var st = store.get('cl_' + key, {}), done = !!st[i], next = i + 1 < cl.items.length ? i + 1 : null;
-  var links = (meta.links || []).map(function (url, n) { return [g.links[n] || url, url]; });
-  function sec(h, body) { return '<div class="card"><h3>' + h + '</h3>' + body + '</div>'; }
-  return {title:t('howto_title'), back:'todo', tab:'todo', html:
-    '<p class="muted" style="margin-bottom:4px">' + t('step_of', {list:esc(cl.title), n:i + 1, total:cl.items.length}) + '</p><h2>' + esc(cl.items[i]) + '</h2>' +
-    '<div class="card"><p style="margin:0">' + esc(g.why) + '</p>' +
-      '<div class="row" style="margin-top:10px"><span class="tag">💶 ' + esc(g.cost) + '</span>' + (g.time ? '<span class="tag">⏱️ ' + esc(g.time) + '</span>' : '') + '</div></div>' +
-    sec(t('how_do'), g.steps.map(function (s, n) { return '<div class="step" style="margin:8px 0"><b class="n">' + (n + 1) + '</b><p style="margin:3px 0 0">' + esc(s) + '</p></div>'; }).join('')) +
-    (g.bring.length ? sec(t('what_bring'), '<ul class="list">' + g.bring.map(function (b) { return '<li>📄 ' + esc(b) + '</li>'; }).join('') + '</ul>') : '') +
-    (g.tip ? '<div class="card result mid"><b>💡 ' + t('tip') + '</b><p style="margin:4px 0 0">' + esc(g.tip) + '</p></div>' : '') +
-    (links.length || meta.go ? sec(t('useful_links'), '<div class="row">' +
-      (meta.go ? '<a class="btn sm" href="#' + meta.go + '">' + esc(g.go) + '</a>' : '') +
-      links.map(function (l) { return '<a class="btn ghost sm" href="' + l[1] + '" target="_blank" rel="noopener">' + esc(l[0]) + ' ↗</a>'; }).join('') + '</div>' +
-      (links.length ? '<p class="muted" style="margin:8px 0 0">' + t('check_official') + '</p>' : '')) : '') +
-    '<button class="btn block' + (done ? ' ghost' : '') + '" id="gdone">' + (done ? t('done_undo') : t('mark_done')) + '</button>' +
-    (next !== null ? '<button class="btn ghost block" style="margin-top:10px" onclick="location.hash=\'guide/' + key + '/' + next + '\'">' + t('next', {x:esc(cl.items[next])}) + '</button>' : '') +
-    '<p class="muted" style="text-align:center;margin-top:14px">' + t('stuck') + '</p>',
+/* ----- room pass ----- */
+function loginPrompt(msg, icon) {
+  return '<div class="empty">' + icon + '<br>' + msg + '<br><br><button class="btn" onclick="location.hash=\'signup\'">' + t('create_account') + '</button> <button class="btn ghost" onclick="location.hash=\'login\'">' + t('log_in') + '</button></div>';
+}
+views.pass = function () {
+  var u = me();
+  if (!u) return {title:t('pass_title'), tab:'pass', html:loginPrompt(t('pass_need_login'), '🔑')};
+  var r = u.room ? room(u.room) : null;
+  if (!r) return {title:t('pass_title'), tab:'pass', html:'<div class="empty">🔑<br>' + t('pass_need_room') + '<br><br><button class="btn" onclick="location.hash=\'rooms\'">' + t('pass_choose_room') + '</button></div>'};
+  var doors = [['main','🚪'], ['bikes','🚲'], ['laundry','🧺'], ['room','🛏️']];
+  return {title:t('pass_title'), tab:'pass', html:
+    '<div class="pass"><div class="top"><img src="icons/logo.png" alt="Haven"><span class="nfc">)))</span></div>' +
+      '<div class="lbl" style="margin-top:12px">' + t('pass_resident') + '</div><h3>' + esc(u.name) + '</h3>' +
+      '<div class="cols"><div><div class="lbl">' + t('pass_room') + '</div><div class="val">' + r.id + '</div></div><div><div class="lbl">' + t('pass_floor') + '</div><div class="val">' + floorName(r.floor) + '</div></div>' +
+      '<div><div class="lbl">' + t('pass_valid') + '</div><div class="val">08/2028</div></div></div></div>' +
+    (u.passBlocked ? '<div class="card result bad"><p style="margin:0 0 8px">' + t('pass_blocked') + '</p><button class="btn ghost sm" id="unblock">' + t('pass_unblock') + '</button></div>' :
+      '<div class="qrbox"><div id="qr"></div><small>' + t('pass_qr') + '</small><small id="qrt"></small></div>' +
+      '<div class="card"><h3>' + t('pass_open') + '</h3><div id="doorout"></div><div class="grid2" style="margin:0">' + doors.map(function (d) {
+        return '<button class="tile" data-door="' + d[0] + '"><span class="ic">' + d[1] + '</span><b>' + t('door_' + d[0]) + '</b></button>'; }).join('') + '</div></div>' +
+      '<div class="card"><p style="margin:0 0 8px" class="muted">' + t('pass_lost') + '</p><button class="btn danger sm" id="block">' + t('pass_block') + '</button></div>') +
+    '<p class="muted" style="text-align:center">' + t('pass_demo') + '</p>',
     bind: function () {
-      document.getElementById('gdone').onclick = function () {
-        st[i] = !done; store.set('cl_' + key, st); toast(done ? t('marked_not_done') : t('nice_done'));
-        if (!done && next !== null) go('guide/' + key + '/' + next); else render();
-      };
-    }
-  };
-};
-
-views.todo = function () {
-  return {title:t('todo_title'), tab:'todo', html: '<p class="muted">' + t('todo_intro') + '</p>' + LIST_KEYS.map(function (key) {
-    var st = store.get('cl_' + key, {}), cl = list(key), pr = checklistProgress(key);
-    return '<div class="card"><h3>' + esc(cl.title) + '</h3><span class="muted">' + t('n_done', {n:pr[0], total:pr[1]}) + '</span>' + bar(pr[0], pr[1]) +
-      cl.items.map(function (it, i) {
-        return '<div class="check' + (st[i] ? ' done' : '') + '"><input type="checkbox" aria-label="' + esc(t('done_aria')) + '" data-cl="' + key + '" data-i="' + i + '"' + (st[i] ? ' checked' : '') + '>' +
-          '<a class="howto" href="#guide/' + key + '/' + i + '"><span>' + esc(it) + '</span><small>' + t('how_arrange') + '</small></a></div>';
-      }).join('') +
-      (key === 'pay' ? '<p class="muted" style="margin-top:8px">' + (pr[0] === pr[1] ? t('pay_ok') : t('pay_warn')) + '</p>' : '') + '</div>';
-  }).join(''),
-    bind: function () {
-      document.querySelectorAll('[data-cl]').forEach(function (b) {
-        b.onchange = function () { var k = 'cl_' + b.dataset.cl, st = store.get(k, {}); st[b.dataset.i] = b.checked; store.set(k, st); var y = scrollY; render(); scrollTo(0, y); };
-      });
-    }
-  };
-};
-
-views.scam = function (roomId) {
-  var ans = {}, Q = D('scam');
-  var room = roomId ? store.get('rooms', []).filter(function (x) { return x.id === roomId; })[0] : null;
-  return {title:t('scam_title'), back:room ? 'room/' + room.id : 'help', html:
-    '<div class="card"><h3>' + t('scam_q_title') + '</h3><p class="muted">' + (room ? t('checking', {x:'<b>' + esc(room.title) + '</b>'}) + ' ' : '') + t('scam_intro') + '</p></div>' +
-    Q.map(function (q, i) {
-      return '<div class="card"><p style="margin-bottom:8px">' + (i + 1) + '. ' + esc(q) + '</p><div class="chips" style="margin:0"><button class="chip" data-q="' + i + '" data-v="1">' + t('yes') + '</button><button class="chip" data-q="' + i + '" data-v="0">' + t('no') + '</button><button class="chip" data-q="' + i + '" data-v="0.5">' + t('not_sure') + '</button></div></div>';
-    }).join('') + '<div id="out"></div>',
-    bind: function () {
-      document.querySelectorAll('[data-q]').forEach(function (b) {
+      var ub = document.getElementById('unblock');
+      if (ub) { ub.onclick = function () { u.passBlocked = false; saveMe(u); render(); }; return; }
+      function drawQR() {
+        var el = document.getElementById('qr'); if (!el) return;
+        var slot = Math.floor(Date.now() / 30000), left = 30 - Math.floor(Date.now() / 1000) % 30;
+        if (el.dataset.slot !== String(slot) && window.qrcode) {
+          var q = qrcode(0, 'M'); q.addData('HAVEN|' + r.id + '|' + u.id + '|' + slot); q.make();
+          el.innerHTML = q.createSvgTag({cellSize:5, margin:2, scalable:true}); el.dataset.slot = String(slot);
+        }
+        document.getElementById('qrt').textContent = t('pass_refresh', {n:left});
+      }
+      drawQR(); timers.push(setInterval(drawQR, 1000));
+      document.querySelectorAll('[data-door]').forEach(function (b) {
         b.onclick = function () {
-          ans[b.dataset.q] = +b.dataset.v;
-          document.querySelectorAll('[data-q="' + b.dataset.q + '"]').forEach(function (x) { x.classList.toggle('on', x === b); });
-          var n = Object.keys(ans).length, out = document.getElementById('out');
-          if (n < Q.length) { out.innerHTML = '<p class="muted" style="text-align:center">' + t('n_answered', {n:n, total:Q.length}) + '</p>'; return; }
-          var score = SCAM_W.reduce(function (s, w, k) { return s + w * ans[k]; }, 0);
-          var hi = SCAM_W.some(function (w, k) { return w >= 4 && ans[k] === 1; });
-          var lvl = (score >= 6 || hi) ? 'bad' : score >= 3 ? 'mid' : 'ok';
-          out.innerHTML = '<div class="card result ' + lvl + '"><h3>' + t('res_' + lvl + '_t') + '</h3><p>' + t('res_' + lvl) + '</p><button class="btn ghost sm" onclick="location.hash=\'todo\'">' + t('open_pay_list') + '</button></div>';
-          if (room) { var lst = store.get('rooms', []); lst.forEach(function (x) { if (x.id === room.id) x.scam = (score >= 6 || hi) ? Math.max(score, 6) : score; }); store.set('rooms', lst); toast(t('result_saved')); }
-          out.scrollIntoView({behavior:'smooth'});
+          var out = document.getElementById('doorout'), door = t('door_' + b.dataset.door);
+          out.innerHTML = '<div class="waves"><span>📱</span></div><p class="muted" style="text-align:center">' + t('pass_hold') + '</p>';
+          if (navigator.vibrate) navigator.vibrate(30);
+          timers.push(setTimeout(function () {
+            out.innerHTML = '<div class="waves ok"><span>✅</span></div><p style="text-align:center;font-weight:700;color:var(--ok)">' + t('pass_granted', {door:esc(door)}) + '</p>';
+            if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+          }, 1300));
         };
       });
+      document.getElementById('block').onclick = function () { if (confirm(t('confirm_block'))) { u.passBlocked = true; saveMe(u); render(); } };
     }
+  };
+};
+
+/* ----- report a problem ----- */
+function reportStatus(rp) {
+  if (rp.closed) return 'done';
+  var age = Date.now() - rp.at;
+  return age < 2 * 60000 ? 'received' : age < 24 * 3600000 ? 'planned' : 'done';
+}
+views.report = function () {
+  var u = me();
+  var head = '<div class="card result bad"><p style="margin:0">🚨 ' + t('report_emergency') + '</p><div class="row" style="margin-top:8px"><a class="btn danger sm" href="tel:112">' + t('em_112') + '</a></div></div>';
+  if (!u) return {title:t('report_title'), tab:'report', html:head + loginPrompt(t('report_need_login'), '🛠️')};
+  var reps = store.get('reports_' + u.email, []), photo = null;
+  return {title:t('report_title'), tab:'report', html: head +
+    '<form class="card" id="rpf"><p class="muted" style="margin-top:0">' + t('report_intro') + '</p>' +
+    '<label class="f">' + t('r_category') + '</label><select name="cat" required><option value="">' + t('choose') + '</option>' + D('categories').map(function (c, i) { return '<option value="' + i + '">' + esc(c) + '</option>'; }).join('') + '</select>' +
+    '<label class="f">' + t('r_location') + '</label><select name="loc" required>' + D('locations').map(function (c, i) { return '<option value="' + i + '">' + esc(c) + '</option>'; }).join('') + '</select>' +
+    '<label class="f">' + t('r_urgency') + '</label><div class="chips" style="margin:0"><label class="chip"><input type="radio" name="urg" value="0" checked style="width:auto;margin-right:6px">' + t('r_normal') + '</label><label class="chip"><input type="radio" name="urg" value="1" style="width:auto;margin-right:6px">' + t('r_urgent') + '</label></div>' +
+    '<label class="f">' + t('r_desc') + '</label><textarea name="desc" rows="3" required placeholder="' + esc(t('r_desc_ph')) + '"></textarea>' +
+    '<label class="f">' + t('r_photo') + '</label><input type="file" name="photo" accept="image/*" capture="environment"><div id="ph" style="margin-top:6px"></div>' +
+    '<label class="switch"><span>' + t('r_access') + '</span><input type="checkbox" name="access"></label>' +
+    '<button class="btn block" style="margin-top:12px">' + t('r_send') + '</button></form>' +
+    '<h2>' + t('my_reports') + '</h2>' +
+    (reps.length ? reps.map(function (rp) {
+      var st = reportStatus(rp);
+      return '<div class="card"><div class="row" style="justify-content:space-between"><b>#' + rp.no + ' · ' + esc(D('categories')[rp.cat]) + '</b><span class="tag ' + (st === 'done' ? 'ok' : st === 'planned' ? 'mid' : '') + '">' + t('st_' + st) + '</span></div>' +
+        '<p class="muted" style="margin:4px 0">' + esc(D('locations')[rp.loc]) + (rp.urg ? ' · ⚠️ ' + t('r_urgent') : '') + ' · ' + longDate(new Date(rp.at)) + '</p><p style="margin:0">' + esc(rp.desc) + '</p>' +
+        (rp.photo ? '<img class="thumb" style="margin-top:8px" src="' + rp.photo + '" alt="">' : '') +
+        (st !== 'done' ? '<div style="margin-top:8px"><button class="btn ghost sm" data-close="' + rp.no + '">' + t('r_close') + '</button></div>' : '') + '</div>';
+    }).join('') : '<div class="empty">' + t('no_reports') + '</div>'),
+    bind: function () {
+      var form = document.getElementById('rpf');
+      form.photo.onchange = function () {
+        var file = form.photo.files[0]; if (!file) return;
+        var img = new Image(), url = URL.createObjectURL(file);
+        img.onload = function () {
+          var c = document.createElement('canvas'), s = Math.min(1, 240 / Math.max(img.width, img.height));
+          c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          photo = c.toDataURL('image/jpeg', 0.7); URL.revokeObjectURL(url);
+          document.getElementById('ph').innerHTML = '<img class="thumb" src="' + photo + '" alt="">';
+        };
+        img.src = url;
+      };
+      form.onsubmit = function (e) {
+        e.preventDefault();
+        var no = 'H' + String(Date.now()).slice(-6);
+        reps.unshift({no:no, cat:+form.cat.value, loc:+form.loc.value, urg:form.urg.value === '1', desc:form.desc.value.trim(), access:form.access.checked, photo:photo, at:Date.now()});
+        store.set('reports_' + u.email, reps); toast(t('r_sent', {n:no})); render();
+      };
+      document.querySelectorAll('[data-close]').forEach(function (b) {
+        b.onclick = function () { reps.forEach(function (rp) { if (rp.no === b.dataset.close) rp.closed = true; }); store.set('reports_' + u.email, reps); toast(t('r_closed')); render(); };
+      });
+    }
+  };
+};
+
+/* ----- construction updates ----- */
+views.updates = function () {
+  var ph = D('phases'), news = D('news'), notify = store.get('notify', true), cur = currentPhase();
+  var seenBefore = new Date(store.get('news_seen', 0));
+  store.set('news_seen', new Date().toISOString());
+  return {title:t('updates_title'), back:'home', html:
+    '<div class="card"><p class="muted" style="margin-top:0">' + t('updates_intro') + '</p><div class="big">' + buildProgress() + '%</div><div class="bar"><i style="width:' + buildProgress() + '%"></i></div>' +
+      '<label class="switch"><span>' + t('notify') + '</span><input type="checkbox" id="notify"' + (notify ? ' checked' : '') + '></label></div>' +
+    '<div class="card"><h3>' + t('phases') + '</h3><ul class="timeline">' + ph.map(function (p, i) {
+      var pr = HAVEN.phases[i], cls = pr >= 100 ? 'done' : i === cur ? 'now' : '';
+      return '<li class="' + cls + '"><i></i><b>' + esc(p[0]) + '</b><div class="muted">' + esc(p[1]) + ' · ' + (pr >= 100 ? t('ph_done') : i === cur ? t('ph_now') + ' (' + pr + '%)' : t('ph_next')) + '</div></li>';
+    }).join('') + '</ul></div>' +
+    '<h2>' + t('news') + '</h2>' + news.map(function (n, i) {
+      var d = new Date(HAVEN.news[i]), isNew = d > seenBefore;
+      return '<div class="card news"><div class="date">' + longDate(d) + (isNew ? ' <span class="dot">!</span>' : '') + '</div><h3>' + esc(n[0]) + '</h3><p style="margin:0">' + esc(n[1]) + '</p></div>';
+    }).join(''),
+    bind: function () { document.getElementById('notify').onchange = function (e) { store.set('notify', e.target.checked); toast(e.target.checked ? t('notify_on') : t('notify_off')); }; }
+  };
+};
+
+/* ----- help ----- */
+views.help = function () {
+  return {title:t('help_title'), back:'home', html:
+    '<div class="grid2">' +
+      '<button class="tile" onclick="location.hash=\'budget\'"><span class="ic">💶</span><b>' + t('tile_budget') + '</b><span>' + t('h_monthly') + '</span></button>' +
+      '<button class="tile" onclick="location.hash=\'rights\'"><span class="ic">⚖️</span><b>' + t('h_rights') + '</b><span>' + t('h_rights_sub') + '</span></button>' +
+    '</div>' +
+    '<div class="card"><h3>' + t('emergency') + '</h3><div class="row"><a class="btn danger sm" href="tel:112">' + t('em_112') + '</a><a class="btn ghost sm" href="tel:09008844">' + t('em_police') + '</a></div></div>' +
+    '<div class="card"><h3>' + t('questions') + '</h3>' + D('faq').map(function (f) { return '<details><summary>' + esc(f[0]) + '</summary><p>' + esc(f[1]) + '</p></details>'; }).join('') + '</div>' +
+    '<div class="card"><h3>🌐 ' + t('language') + '</h3>' + langPicker() + '</div>' +
+    '<div class="card"><h3>' + t('ask_dd') + '</h3><p class="muted">' + t('ask_text') + '</p><form id="cf"><textarea required rows="3" placeholder="' + esc(t('your_q')) + '"></textarea><button class="btn block" style="margin-top:8px">' + t('send') + '</button></form></div>' +
+    '<p class="muted" style="text-align:center">' + t('disclaimer') + '</p>',
+    bind: function () { bindLangPicker(); document.getElementById('cf').onsubmit = function (e) { e.preventDefault(); e.target.reset(); toast(t('sent_toast')); }; }
   };
 };
 
 views.budget = function () {
-  var b = store.get('budget', {income:1250, rent:650, food:250, insurance:40, phone:20, transport:30, study:50, fun:100});
+  var b = store.get('budget2', {income:1100, rent:620, food:250, insurance:40, phone:15, transport:30, study:50, fun:100});
   var fields = ['income','rent','food','insurance','phone','transport','study','fun'];
   return {title:t('budget_title'), back:'help', html:
     '<div class="card"><h3>' + t('budget_q') + '</h3><p class="muted">' + t('budget_intro') + '</p>' +
@@ -338,7 +378,7 @@ views.budget = function () {
     bind: function () {
       function calc() {
         document.querySelectorAll('[data-b]').forEach(function (i) { b[i.dataset.b] = +i.value || 0; });
-        store.set('budget', b);
+        store.set('budget2', b);
         var cost = b.rent + b.food + b.insurance + b.phone + b.transport + b.study + b.fun, left = b.income - cost;
         var maxRent = Math.max(0, b.income - (cost - b.rent));
         var lvl = left < 0 ? 'bad' : left < 75 ? 'mid' : 'ok';
@@ -346,7 +386,7 @@ views.budget = function () {
           '<p>' + t('total_costs', {cost:eur(cost), max:eur(maxRent)}) + '</p>' +
           '<p class="muted">' + t('budget_tip') + '</p>' +
           '<button class="btn sm" id="usebud">' + t('use_max', {x:eur(maxRent)}) + '</button></div>';
-        document.getElementById('usebud').onclick = function () { var p = store.get('prefs', {city:'', budget:650, type:'room'}); p.budget = Math.min(1600, Math.round(maxRent / 25) * 25); store.set('prefs', p); go('search'); };
+        document.getElementById('usebud').onclick = function () { store.set('rf', {type:'all', max:Math.max(500, Math.min(1300, Math.floor(maxRent / 25) * 25))}); go('allrooms'); };
       }
       document.querySelectorAll('[data-b]').forEach(function (i) { i.oninput = calc; });
       calc();
@@ -363,61 +403,37 @@ views.rights = function () {
   };
 };
 
-views.help = function () {
-  return {title:t('help_title'), back:'home', html:
-    '<div class="grid2">' +
-      '<button class="tile" onclick="location.hash=\'scam\'"><span class="ic">🛡️</span><b>' + t('tile_scam') + '</b><span>' + t('h_check_ad') + '</span></button>' +
-      '<button class="tile" onclick="location.hash=\'budget\'"><span class="ic">💶</span><b>' + t('tile_budget') + '</b><span>' + t('h_monthly') + '</span></button>' +
-      '<button class="tile" onclick="location.hash=\'rights\'"><span class="ic">⚖️</span><b>' + t('h_rights') + '</b><span>' + t('h_rights_sub') + '</span></button>' +
-      '<button class="tile" onclick="location.hash=\'steps\'"><span class="ic">🗺️</span><b>' + t('h_steps') + '</b><span>' + t('h_steps_sub') + '</span></button>' +
-    '</div>' +
-    '<div class="card"><h3>' + t('emergency') + '</h3><div class="row"><a class="btn danger sm" href="tel:112">' + t('em_112') + '</a><a class="btn ghost sm" href="tel:09008844">' + t('em_police') + '</a><a class="btn ghost sm" href="tel:0887867372">' + t('em_fraud') + '</a></div></div>' +
-    '<div class="card"><h3>' + t('questions') + '</h3>' + D('faq').map(function (f) { return '<details><summary>' + esc(f[0]) + '</summary><p>' + esc(f[1]) + '</p></details>'; }).join('') + '</div>' +
-    '<div class="card"><h3>🌐 ' + t('language') + '</h3>' + langPicker() + '</div>' +
-    '<div class="card"><h3>' + t('ask_dd') + '</h3><p class="muted">' + t('ask_text') + '</p><form id="cf"><textarea required rows="3" placeholder="' + esc(t('your_q')) + '"></textarea><button class="btn block" style="margin-top:8px">' + t('send') + '</button></form></div>' +
-    '<p class="muted" style="text-align:center">' + t('disclaimer') + '</p>',
-    bind: function () { bindLangPicker(); document.getElementById('cf').onsubmit = function (e) { e.preventDefault(); e.target.reset(); toast(t('sent_toast')); }; }
-  };
-};
-
-views.steps = function () {
-  return {title:t('steps_title'), back:'help', html:'<div class="card">' + D('steps').map(function (x, i) { return '<div class="step" style="margin-bottom:12px"><b class="n">' + (i + 1) + '</b><div><h3>' + esc(x[0]) + '</h3><p class="muted">' + esc(x[1]) + '</p></div></div>'; }).join('') + '<button class="btn block" onclick="location.hash=\'search\'">' + t('start_searching') + '</button></div>'};
-};
-
 /* ---------- accounts (demo: stored on this phone only) ---------- */
 var COLORS = ['#1F6FB2','#1E8E5A','#B9770E','#8E44AD','#C0392B','#16A085','#2C3E50','#D35400'];
 function initials(n) { return String(n || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase(); }
 function avatar(p) { var c = COLORS[(p.name || '').length % COLORS.length]; return '<div class="av" style="background:' + c + '">' + esc(initials(p.name)) + '</div>'; }
 function accounts() { return store.get('accounts', {}); }
 function me() { var s = store.get('session', null); return s ? accounts()[s] || null : null; }
-function viewer() { return me() || {guest:true, name:'', city:store.get('prefs', {}).city || '', school:''}; }
 function saveMe(u) { var a = accounts(); a[u.email] = u; store.set('accounts', a); }
 function hash(pw) {
   if (window.crypto && crypto.subtle) return crypto.subtle.digest('SHA-256', new TextEncoder().encode('dd:' + pw)).then(function (b) { return Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); });
   return Promise.resolve('plain:' + pw);
 }
-// Countries are stored in English (key) and shown translated.
 var COUNTRIES = ['Belgium','Brazil','Bulgaria','China','France','Germany','Greece','India','Indonesia','Italy','Lithuania','Morocco','Netherlands','Nigeria','Poland','Portugal','Romania','Spain','Turkey','Ukraine','United Kingdom','United States','Vietnam','Other'];
 var FLAG = {Belgium:'🇧🇪',Brazil:'🇧🇷',Bulgaria:'🇧🇬',China:'🇨🇳',France:'🇫🇷',Germany:'🇩🇪',Greece:'🇬🇷',India:'🇮🇳',Indonesia:'🇮🇩',Italy:'🇮🇹',Lithuania:'🇱🇹',Morocco:'🇲🇦',Netherlands:'🇳🇱',Nigeria:'🇳🇬',Poland:'🇵🇱',Portugal:'🇵🇹',Romania:'🇷🇴',Spain:'🇪🇸',Turkey:'🇹🇷',Ukraine:'🇺🇦','United Kingdom':'🇬🇧','United States':'🇺🇸',Vietnam:'🇻🇳'};
 function countryName(c) { return (D('countries') || {})[c] || c; }
-// Example profiles for the demo. Not real people. Their texts are written by "the students", so they are not translated.
+// Example profiles for the demo. Not real people. Their texts are "written by the students", so they are not translated.
 var DEMO = [
-  {id:'d1',name:'Lucía Fernández',country:'Spain',city:'den-bosch',school:'Avans',study:'International Business',start:'2027-09',looking:true,about:'Looking for a room in Den Bosch from September. Love cooking and padel!'},
-  {id:'d2',name:'Mateusz Nowak',country:'Poland',city:'den-bosch',school:'Koning Willem I College',study:'Real Estate',start:'2027-09',looking:true,about:'Want to share a house with 2–3 other students. Quiet but social.'},
-  {id:'d3',name:'Aisha Bello',country:'Nigeria',city:'eindhoven',school:'TU/e',study:'Data Science',start:'2027-08',looking:false,about:'Found a room at Vestide. Happy to give tips about Eindhoven!'},
-  {id:'d4',name:'Chen Wei',country:'China',city:'tilburg',school:'Tilburg University',study:'Economics',start:'2027-09',looking:true,about:'Arriving in August. Anyone want to look for a studio together?'},
-  {id:'d5',name:'Giulia Romano',country:'Italy',city:'utrecht',school:'UU',study:'Psychology',start:'2027-09',looking:true,about:'Registered at ROOM.nl. Searching in Utrecht or Zeist.'},
-  {id:'d6',name:'Arjun Mehta',country:'India',city:'delft',school:'TU Delft',study:'Civil Engineering',start:'2027-08',looking:true,about:'Master\'s student. Looking for housemates for a 3-bedroom place.'},
-  {id:'d7',name:'Léa Dubois',country:'France',city:'rotterdam',school:'Erasmus',study:'Law',start:'2027-09',looking:false,about:'Living in Kralingen. Ask me anything about Rotterdam.'},
-  {id:'d8',name:'Jonas Becker',country:'Germany',city:'groningen',school:'Hanze',study:'Facility Management',start:'2027-09',looking:true,about:'Want to arrive early to find a place. Cycling fan.'},
-  {id:'d9',name:'Elena Popescu',country:'Romania',city:'den-bosch',school:'JADS',study:'Data Science & Entrepreneurship',start:'2027-09',looking:false,about:'Already have a room in Rosmalen, happy to help you find one!'},
-  {id:'d10',name:'Mehmet Yılmaz',country:'Turkey',city:'amsterdam',school:'HvA',study:'Built Environment',start:'2027-09',looking:true,about:'Searching in Amsterdam and Diemen. Budget is tight 😅'},
-  {id:'d11',name:'Sofia Costa',country:'Portugal',city:'maastricht',school:'Maastricht University',study:'European Studies',start:'2027-08',looking:true,about:'Anyone else starting in Maastricht? Let\'s meet up!'},
-  {id:'d12',name:'Nguyen Thi Lan',country:'Vietnam',city:'breda',school:'BUas',study:'Tourism',start:'2027-09',looking:false,about:'Got housing through BUas. Ask me how it works.'}
+  {id:'d1',name:'Lucía Fernández',country:'Spain',room:'2.05',school:'Avans',study:'International Business',start:'2027-09',buddy:false,about:'Excited to live in a Comfort room! Love cooking, so see you in the kitchen.'},
+  {id:'d2',name:'Mateusz Nowak',country:'Poland',room:'',school:'Koning Willem I College',study:'Real Estate',start:'2027-09',buddy:true,about:'Looking for someone to share a duo apartment with. Quiet but social.'},
+  {id:'d3',name:'Aisha Bello',country:'Nigeria',room:'4.14',school:'JADS',study:'Data Science',start:'2027-09',buddy:false,about:'I chose a Loft on the top floor. Can not wait for the view!'},
+  {id:'d4',name:'Chen Wei',country:'China',room:'1.12',school:'Avans',study:'Engineering',start:'2027-09',buddy:false,about:'Studio Plus with a balcony. Anyone want to start a plant club?'},
+  {id:'d5',name:'Giulia Romano',country:'Italy',room:'2.01',school:'Avans',study:'Psychology',start:'2027-09',buddy:false,about:'Basic room, best price. Happy to meet my housemates!'},
+  {id:'d6',name:'Arjun Mehta',country:'India',room:'',school:'JADS',study:'Data Science & Entrepreneurship',start:'2027-09',buddy:true,about:'Master\'s student. Looking for a housemate for a duo apartment.'},
+  {id:'d7',name:'Léa Dubois',country:'France',room:'0.07',school:'Koning Willem I College',study:'Hospitality',start:'2027-09',buddy:false,about:'Studio on the ground floor, close to the bike storage. Perfect!'},
+  {id:'d8',name:'Jonas Becker',country:'Germany',room:'3.06',school:'Avans',study:'Facility Management',start:'2027-09',buddy:false,about:'Cycling fan. Let\'s organise a bike tour in the first week.'},
+  {id:'d9',name:'Elena Popescu',country:'Romania',room:'2.10',school:'JADS',study:'Data Science',start:'2027-09',buddy:false,about:'Studio on floor 2. Ask me anything about Den Bosch!'},
+  {id:'d10',name:'Mehmet Yılmaz',country:'Turkey',room:'4.03',school:'Avans',study:'Built Environment',start:'2027-09',buddy:false,about:'Top floor Basic room. Budget is tight, so I love the included Wi-Fi 😅'}
 ];
+function residentOf(x) { return {id:'u:' + x.email,name:x.name,country:x.country,room:x.room || '',school:x.school,study:x.study,start:x.start,buddy:x.buddy,about:x.about}; }
 function others() {
   var u = me(), lst = DEMO.slice(), a = accounts();
-  Object.keys(a).forEach(function (k) { var x = a[k]; if (x.visible && (!u || x.email !== u.email)) lst.push({id:'u:' + x.email,name:x.name,country:x.country,city:x.city,school:x.school,study:x.study,start:x.start,looking:x.looking,about:x.about}); });
+  Object.keys(a).forEach(function (k) { var x = a[k]; if (x.visible && (!u || x.email !== u.email)) lst.push(residentOf(x)); });
   return lst;
 }
 function person(id) { return others().filter(function (p) { return p.id === id; })[0]; }
@@ -427,17 +443,16 @@ function profileFields(u) {
   var countries = COUNTRIES.slice().sort(function (a, b) { return a === 'Other' ? 1 : b === 'Other' ? -1 : countryName(a).localeCompare(countryName(b), LANG); });
   return '<label class="f">' + t('full_name') + '</label><input name="name" required value="' + esc(u.name) + '" autocomplete="name">' +
     '<label class="f">' + t('country') + '</label><select name="country" required><option value="">' + t('choose') + '</option>' + countries.map(function (c) { return '<option value="' + esc(c) + '"' + (c === u.country ? ' selected' : '') + '>' + esc(countryName(c)) + '</option>'; }).join('') + '</select>' +
-    '<label class="f">' + t('study_city') + '</label><select name="city" required><option value="">' + t('choose') + '</option>' + CITIES.map(function (c) { return '<option value="' + c.id + '"' + (c.id === u.city ? ' selected' : '') + '>' + esc(cityName(c)) + '</option>'; }).join('') + '</select>' +
     '<label class="f">' + t('school') + '</label><input name="school" required value="' + esc(u.school) + '" placeholder="' + esc(t('ph_school')) + '">' +
     '<label class="f">' + t('study') + '</label><input name="study" value="' + esc(u.study) + '" placeholder="' + esc(t('ph_study')) + '">' +
     '<label class="f">' + t('start_date') + '</label><input name="start" type="month" value="' + esc(u.start || '2027-09') + '">' +
     '<label class="f">' + t('about') + '</label><textarea name="about" rows="2" placeholder="' + esc(t('ph_about')) + '">' + esc(u.about) + '</textarea>' +
-    '<label class="switch"><span>' + t('still_looking') + '</span><input type="checkbox" name="looking"' + (u.looking !== false ? ' checked' : '') + '></label>' +
+    '<label class="switch"><span>' + t('buddy') + '</span><input type="checkbox" name="buddy"' + (u.buddy ? ' checked' : '') + '></label>' +
     '<label class="switch"><span>' + t('show_profile') + '</span><input type="checkbox" name="visible"' + (u.visible !== false ? ' checked' : '') + '></label>';
 }
 function readProfile(fd, u) {
-  ['name','country','city','school','study','start','about'].forEach(function (k) { u[k] = (fd.get(k) || '').trim(); });
-  u.looking = fd.get('looking') === 'on'; u.visible = fd.get('visible') === 'on';
+  ['name','country','school','study','start','about'].forEach(function (k) { u[k] = (fd.get(k) || '').trim(); });
+  u.buddy = fd.get('buddy') === 'on'; u.visible = fd.get('visible') === 'on';
   return u;
 }
 
@@ -467,9 +482,8 @@ views.signup = function () {
         e.preventDefault(); var fd = new FormData(e.target), email = fd.get('email').trim().toLowerCase();
         if (accounts()[email]) { document.getElementById('serr').textContent = t('email_exists'); return; }
         hash(fd.get('pw')).then(function (h) {
-          var u = readProfile(fd, {email:email, pw:h, created:new Date().toISOString().slice(0, 10), id:'S' + String(Date.now()).slice(-7)});
+          var u = readProfile(fd, {email:email, pw:h, created:new Date().toISOString().slice(0, 10), id:'S' + String(Date.now()).slice(-7), apps:[]});
           saveMe(u); store.set('session', email);
-          var p = store.get('prefs', {city:'', budget:650, type:'room'}); p.city = u.city; store.set('prefs', p);
           toast(t('welcome_toast', {name:u.name.split(' ')[0]})); go('home');
         });
       };
@@ -496,17 +510,17 @@ views.login = function () {
 };
 
 views.profile = function () {
-  var u = me(), c = city(u.city);
+  var u = me(), r = u.room ? room(u.room) : null;
   return {title:t('my_profile'), back:'home', html:
     '<div class="idcard"><span class="badge">' + t('student_badge') + '</span><div class="lbl">' + t('card_label') + '</div><h3>' + esc(u.name) + '</h3><div style="opacity:.85">' + esc(u.study || t('student')) + '</div>' +
-    '<div class="cols"><div><div class="lbl">' + t('school') + '</div><div class="val">' + esc(u.school) + '</div></div><div><div class="lbl">' + t('city') + '</div><div class="val">' + (c ? esc(cityName(c)) : '') + '</div></div>' +
+    '<div class="cols"><div><div class="lbl">' + t('school') + '</div><div class="val">' + esc(u.school) + '</div></div><div><div class="lbl">' + t('pass_room') + '</div><div class="val">' + (r ? r.id + ' · ' + esc(typeText(r.type).name) : t('no_room_yet')) + '</div></div>' +
     '<div><div class="lbl">' + t('student_no') + '</div><div class="val">' + esc(u.id) + '</div></div><div><div class="lbl">' + t('from') + '</div><div class="val">' + (FLAG[u.country] || '') + ' ' + esc(countryName(u.country)) + '</div></div></div></div>' +
     '<div class="card"><h3>🌐 ' + t('language') + '</h3>' + langPicker() + '</div>' +
     '<form class="card" id="pf"><h3>' + t('my_details') + '</h3><label class="f">' + t('email') + '</label><input value="' + esc(u.email) + '" disabled>' + profileFields(u) +
     '<button class="btn block" style="margin-top:12px">' + t('save_changes') + '</button></form>' +
     '<div class="card"><h3>' + t('settings') + '</h3>' +
     '<a class="city" style="text-decoration:none;color:inherit;padding:8px 0" href="#help"><span>' + t('help_em') + '</span><span>›</span></a>' +
-    '<a class="city" style="text-decoration:none;color:inherit;padding:8px 0" href="#todo"><span>' + t('my_todo') + '</span><span>›</span></a>' +
+    '<a class="city" style="text-decoration:none;color:inherit;padding:8px 0" href="#updates"><span>' + t('updates_title') + '</span><span>›</span></a>' +
     '<div class="row" style="margin-top:10px"><button class="btn ghost sm" id="logout">' + t('log_out') + '</button><button class="btn danger sm" id="delacc">' + t('delete_account') + '</button></div></div>' +
     '<p class="muted" style="text-align:center">' + t('member_since', {date:esc(u.created)}) + '</p>',
     bind: function () {
@@ -521,45 +535,43 @@ views.profile = function () {
   };
 };
 
+function floorOf(roomId) { var r = room(roomId); return r ? r.floor : null; }
 views.community = function () {
-  var u = viewer(), f = store.get('cf', 'city');
-  if (u.guest && (f === 'school' || (f === 'city' && !u.city))) f = 'all';
+  var u = me(), f = store.get('cf2', 'all'), myFloor = u && u.room ? floorOf(u.room) : null;
+  if (f === 'floor' && myFloor === null) f = 'all';
   var lst = others().filter(function (p) {
-    if (f === 'city') return p.city === u.city;
-    if (f === 'school') return p.school.toLowerCase() === (u.school || '').toLowerCase();
-    if (f === 'looking') return p.looking;
+    if (f === 'floor') return floorOf(p.room) === myFloor;
+    if (f === 'buddy') return p.buddy;
     return true;
   });
-  var uc = city(u.city), cn = uc ? esc(cityName(uc)) : t('my_city');
-  var chips = [['city', t('f_in', {city:cn})], ['school', t('f_at', {school:u.school ? esc(u.school) : t('my_school')})], ['looking', t('f_looking')], ['all', t('f_all')]]
-    .filter(function (x) { return !u.guest || (x[0] !== 'school' && (x[0] !== 'city' || u.city)); });
+  var chips = [['all', t('f_all')], ['buddy', t('f_buddy')]];
+  if (myFloor !== null) chips.splice(1, 0, ['floor', t('f_floor') + ' (' + floorName(myFloor) + ')']);
   return {title:t('comm_title'), tab:'community', html:
     '<div class="card"><h3>' + t('meet_title') + '</h3><p class="muted">' + t('comm_text') + '</p>' +
     '<div class="chips">' + chips.map(function (x) { return '<button class="chip' + (f === x[0] ? ' on' : '') + '" data-f="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div></div>' +
-    (u.guest ? '<div class="card result"><p style="margin:0 0 8px">' + t('guest_note') + '</p><button class="btn sm" onclick="location.hash=\'signup\'">' + t('create_account') + '</button></div>' : '') +
+    (!u ? '<div class="card result"><p style="margin:0 0 8px">' + t('guest_note') + '</p><button class="btn sm" onclick="location.hash=\'signup\'">' + t('create_account') + '</button></div>' : '') +
     '<p class="muted">' + t('n_students', {n:lst.length}) + '</p>' +
     (lst.length ? lst.map(function (p) {
-      var pc = city(p.city);
+      var r = p.room ? room(p.room) : null;
       return '<div class="card person" onclick="location.hash=\'student/' + encodeURIComponent(p.id) + '\'">' + avatar(p) +
-        '<div class="grow"><h3>' + esc(p.name) + ' ' + (FLAG[p.country] || '') + '</h3><div class="muted">' + esc(p.school) + ' · ' + (pc ? esc(cityName(pc)) : '') + '</div>' +
-        (p.looking ? '<span class="tag mid">' + t('looking_room') + '</span>' : '<span class="tag ok">' + t('has_room') + '</span>') + '</div><span>›</span></div>';
+        '<div class="grow"><h3>' + esc(p.name) + ' ' + (FLAG[p.country] || '') + '</h3><div class="muted">' + esc(p.school) + (r ? ' · ' + t('room_n', {n:r.id}) : '') + '</div>' +
+        (p.buddy ? '<span class="tag mid">' + t('buddy_tag') + '</span>' : (r ? '<span class="tag">' + type(r.type).icon + ' ' + esc(typeText(r.type).name) + '</span>' : '')) + '</div><span>›</span></div>';
     }).join('') : '<div class="empty">' + t('no_students') + '<br><button class="btn ghost sm" style="margin-top:10px" data-f="all">' + t('show_everyone') + '</button></div>'),
-    bind: function () { document.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { store.set('cf', b.dataset.f); render(); }; }); }
+    bind: function () { document.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { store.set('cf2', b.dataset.f); render(); }; }); }
   };
 };
 
 views.student = function (id) {
   var p = person(decodeURIComponent(id)); if (!p) return views.community();
-  var u = viewer(), c = city(p.city), tags = [];
-  if (u.city && p.city === u.city) tags.push(t('same_city'));
-  if (u.school && p.school.toLowerCase() === u.school.toLowerCase()) tags.push(t('same_school'));
+  var u = me(), r = p.room ? room(p.room) : null, same = u && u.room && r && floorOf(u.room) === r.floor;
   return {title:p.name.split(' ')[0], back:'community', tab:'community', html:
     '<div class="card" style="text-align:center">' + avatar(p).replace('class="av"', 'class="av" style="width:72px;height:72px;font-size:1.5rem;margin:0 auto 8px;background:' + COLORS[(p.name || '').length % COLORS.length] + '"') +
     '<h2>' + esc(p.name) + '</h2><p class="muted">' + (FLAG[p.country] || '') + ' ' + t('from_country', {country:esc(countryName(p.country))}) + '</p>' +
-    tags.map(function (x) { return '<span class="tag ok" style="margin:2px">' + x + '</span>'; }).join('') + '</div>' +
-    '<div class="card"><ul class="list"><li><b>' + t('lbl_school') + '</b> ' + esc(p.school) + '</li><li><b>' + t('lbl_study') + '</b> ' + esc(p.study || '–') + '</li><li><b>' + t('lbl_city') + '</b> ' + (c ? esc(cityName(c)) : '') + '</li><li><b>' + t('lbl_starts') + '</b> ' + esc(p.start || '–') + '</li>' +
-    '<li><b>' + t('lbl_housing') + '</b> ' + (p.looking ? t('still_looking_room') : t('has_room')) + '</li></ul>' + (p.about ? '<p style="margin-top:10px">“' + esc(p.about) + '”</p>' : '') + '</div>' +
-    (u.guest ? '<button class="btn block" onclick="location.hash=\'signup\'">' + t('create_to_msg') + '</button>' :
+    (same ? '<span class="tag ok">' + t('same_floor') + '</span> ' : '') + (p.buddy ? '<span class="tag mid">' + t('buddy_tag') + '</span>' : '') + '</div>' +
+    '<div class="card"><ul class="list"><li><b>' + t('lbl_school') + '</b> ' + esc(p.school) + '</li><li><b>' + t('lbl_study') + '</b> ' + esc(p.study || '–') + '</li>' +
+    '<li><b>' + t('lbl_room') + '</b> ' + (r ? r.id + ' · ' + esc(typeText(r.type).name) + ' · ' + floorName(r.floor) : '–') + '</li><li><b>' + t('lbl_starts') + '</b> ' + esc(p.start || '–') + '</li></ul>' +
+    (p.about ? '<p style="margin-top:10px">“' + esc(p.about) + '”</p>' : '') + '</div>' +
+    (!u ? '<button class="btn block" onclick="location.hash=\'signup\'">' + t('create_to_msg') + '</button>' :
       '<button class="btn block" onclick="location.hash=\'chat/' + encodeURIComponent(p.id) + '\'">' + t('send_msg') + '</button>') +
     '<p class="muted" style="margin-top:12px">' + t('safety') + '</p>'
   };
@@ -590,7 +602,9 @@ views.chat = function (id) {
 };
 
 /* ---------- router ---------- */
+var TAB_LABEL = {home:'tab_home', rooms:'tab_rooms', pass:'tab_pass', report:'tab_report', community:'tab_community'};
 function render() {
+  clearTimers();
   var parts = (location.hash.slice(1) || 'home').split('/');
   var auth = {welcome:1, signup:1, login:1}, u = me();
   if (!u && {profile:1, chat:1}[parts[0]]) parts = ['welcome'];
@@ -603,14 +617,14 @@ function render() {
   $me.setAttribute('aria-label', u ? t('aria_profile') : t('aria_login'));
   $me.onclick = function () { go(u ? 'profile' : 'welcome'); };
   $back.setAttribute('aria-label', t('aria_back'));
-  document.querySelectorAll('.tabs button').forEach(function (b) { b.lastChild.textContent = t('tab_' + {home:'home', search:'rooms', tracker:'saved', todo:'todo', community:'community'}[b.dataset.tab]); });
+  document.querySelectorAll('.tabs button').forEach(function (b) { b.lastChild.textContent = t(TAB_LABEL[b.dataset.tab]); });
   var fn = views[parts[0]] || views.home;
   var v = fn(parts[1], parts[2]);
   $title.textContent = v.title;
   $view.innerHTML = v.html;
   $back.hidden = !v.back;
   $back.onclick = function () { go(v.back); };
-  var tab = v.tab || (parts[0] in {home:1, search:1, tracker:1, todo:1, community:1} ? parts[0] : 'home');
+  var tab = v.tab || (TAB_LABEL[parts[0]] ? parts[0] : 'home');
   document.querySelectorAll('.tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === tab); });
   if (v.bind) v.bind();
 }

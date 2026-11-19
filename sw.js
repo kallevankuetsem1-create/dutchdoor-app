@@ -1,6 +1,6 @@
 // Offline support: cache the app shell, serve it from cache, update in the background.
-var CACHE = 'haven-v7';
-var FILES = ['./', './index.html', './app.css', './app.js', './manifest.webmanifest', './icons/favicon.png', './icons/apple-touch-icon.png', './icons/logo.png', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
+var CACHE = 'haven-v8';
+var FILES = ['./', './index.html', './app.css', './app.js', './manifest.webmanifest', './icons/favicon.png', './icons/apple-touch-icon.png', './icons/logo.png', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './vendor/qrcode.min.js',
   './lang/en.json', './lang/nl.json', './lang/de.json', './lang/es.json', './lang/pl.json'];
 
 self.addEventListener('install', function (e) {

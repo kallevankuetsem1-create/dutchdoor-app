@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Haven</title>
-<meta name="description" content="Find a safe room and get settled as an international student in the Netherlands.">
+<meta name="description" content="Haven student residence: rooms and rents, your digital room pass, repair requests and construction updates.">
 <meta name="theme-color" content="#021839">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon.png" type="image/png">
@@ -23,12 +23,13 @@
 <main id="view" tabindex="-1"></main>
 <nav class="tabs" aria-label="Main">
   <button data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
-  <button data-tab="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Rooms</button>
-  <button data-tab="tracker"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Saved</button>
-  <button data-tab="todo"><svg viewBox="0 0 24 24"><path d="M4 6l2 2 4-4M4 14l2 2 4-4M13 6h7M13 14h7M13 20h7"/></svg>To-do</button>
+  <button data-tab="rooms"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Rooms</button>
+  <button data-tab="pass"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M14 10h4M14 14h4"/></svg>Pass</button>
+  <button data-tab="report"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>Report</button>
   <button data-tab="community"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5"/></svg>Community</button>
 </nav>
 <div class="toast" id="toast" role="status"></div>
+<script src="vendor/qrcode.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
